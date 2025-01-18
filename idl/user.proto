@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "/user";
+
+import "idl/common.proto";
+
+// User service definition
+service UserService {
+  rpc GetUserInfo (GetUserInfoRequest) returns (GetUserInfoResponse);
+}
+
+// GetUserInfo request and response messages
+message GetUserInfoRequest {
+  int64 user_id = 1;
+}
+
+message GetUserInfoResponse {
+  common.User user = 1;
+}

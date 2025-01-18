@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package feed;
+
+option go_package = "/feed";
+
+import "idl/common.proto";
+
+
+message FeedListRequest {
+  repeated int64 video_ids = 1;
+}
+
+message FeedListResponse {
+  repeated common.Video videos = 1;
+}
+
+message FeedInfoRequest {
+  int64 user_id = 1;
+  int64 video_id = 2;
+}
+
+message FeedInfoResponse {
+  common.Video video = 1;
+}
+
+message VideoExistsRequest {
+  int64 video_id = 1;
+}
+
+message VideoExistsResponse {
+  bool exists = 1;
+}
+
+service FeedService {
+  rpc VideoList(FeedListRequest) returns (FeedListResponse);
+  rpc VideoInfo(FeedInfoRequest) returns (FeedInfoResponse);
+  rpc VideoExists(VideoExistsRequest) returns (VideoExistsResponse);
+}

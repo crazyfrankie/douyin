@@ -1,0 +1,20 @@
+server:
+  address: "localhost:9001"
+
+mysql:
+  dsn: "%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local"
+
+kafka:
+  address: "localhost:9094"
+
+redis:
+  address: "localhost:6379"
+
+etcd:
+  address: "localhost:2379"
+
+rpc:
+  address: "localhost:50051"
+
+jwt:
+  secretKey: "xT4vC0eM3tR2lP7kH8gD0kT0oN4oM6yX"

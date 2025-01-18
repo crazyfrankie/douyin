@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package feed;
+
+option go_package = "/favorite";
+
+message FavoriteCountRequest {
+  int64 user_id = 1;
+}
+
+message FavoriteCountResponse {
+  int64 count = 1;
+}
+
+service FavoriteService {
+  rpc FavoriteCount(FavoriteCountRequest) returns (FavoriteCountResponse);
+}
