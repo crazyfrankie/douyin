@@ -2,9 +2,6 @@ package service
 
 import (
 	"context"
-	"github.com/crazyfrankie/douyin/app/user/rpc/client"
-	"github.com/crazyfrankie/douyin/rpc_gen/common"
-	"github.com/crazyfrankie/douyin/rpc_gen/favorite"
 	"sync"
 
 	"golang.org/x/crypto/bcrypt"
@@ -13,6 +10,8 @@ import (
 	"github.com/crazyfrankie/douyin/app/user/biz/repository"
 	"github.com/crazyfrankie/douyin/app/user/biz/repository/dao"
 	"github.com/crazyfrankie/douyin/app/user/common/errno"
+	"github.com/crazyfrankie/douyin/rpc_gen/common"
+	"github.com/crazyfrankie/douyin/rpc_gen/favorite"
 )
 
 var (
@@ -20,11 +19,12 @@ var (
 )
 
 type UserService struct {
-	repo *repository.UserRepo
+	repo        *repository.UserRepo
+	favorClient favorite.FavoriteServiceClient
 }
 
-func NewUserService(repo *repository.UserRepo) *UserService {
-	return &UserService{repo: repo}
+func NewUserService(repo *repository.UserRepo, favorClient favorite.FavoriteServiceClient) *UserService {
+	return &UserService{repo: repo, favorClient: favorClient}
 }
 
 func (s *UserService) Register(ctx context.Context, req biz.RegisterReq) (string, error) {
@@ -98,7 +98,7 @@ func (s *UserService) GetUserInfo(ctx context.Context, uid int64) (*common.User,
 	}()
 
 	go func() {
-		favCountResp, err := client.FavoriteClient.FavoriteCount(ctx, &favorite.FavoriteCountRequest{
+		favCountResp, err := s.favorClient.FavoriteCount(ctx, &favorite.FavoriteCountRequest{
 			UserId: uid,
 		})
 		if err != nil {

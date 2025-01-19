@@ -1,11 +1,9 @@
-package feed
+package main
 
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log"
-	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -14,13 +12,8 @@ import (
 
 	"github.com/joho/godotenv"
 	clientv3 "go.etcd.io/etcd/client/v3"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/health/grpc_health_v1"
 
 	"github.com/crazyfrankie/douyin/app/feed/config"
-	"github.com/crazyfrankie/douyin/app/feed/ioc"
-	"github.com/crazyfrankie/douyin/app/feed/rpc/client"
-	"github.com/crazyfrankie/douyin/rpc_gen/feed"
 )
 
 func main() {
@@ -29,11 +22,11 @@ func main() {
 		panic(err)
 	}
 
-	app := ioc.InitApp()
+	app := InitApp()
 
-	rpcInit(app, config.GetConf().RPC.Address)
+	err = app.RPCServer.Serve()
 
-	client.InitClient()
+	serverRegister(config.GetConf().RPC.Address)
 
 	server := &http.Server{
 		Addr:    config.GetConf().Server.Address,
@@ -64,34 +57,7 @@ func main() {
 	log.Printf("Server exited gracefully")
 }
 
-type healthImpl struct {
-	grpc_health_v1.UnimplementedHealthServer
-}
-
-func (h *healthImpl) Check(ctx context.Context, req *grpc_health_v1.HealthCheckRequest) (*grpc_health_v1.HealthCheckResponse, error) {
-	return &grpc_health_v1.HealthCheckResponse{
-		Status: grpc_health_v1.HealthCheckResponse_SERVING,
-	}, nil
-}
-
-func rpcInit(app *ioc.App, address string) {
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", address))
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
-	}
-	s := grpc.NewServer()
-
-	feed.RegisterFeedServiceServer(s, app.RPCServer)
-	// 健康检查
-	grpc_health_v1.RegisterHealthServer(s, &healthImpl{})
-
-	go func() {
-		if err := s.Serve(lis); err != nil && errors.Is(err, http.ErrServerClosed) {
-			log.Fatalf("listen: %s\n", err)
-		}
-	}()
-	log.Printf("gRPC Server is running at %s", address)
-
+func serverRegister(address string) {
 	cli, err := clientv3.New(clientv3.Config{
 		Endpoints:   []string{config.GetConf().Etcd.Address},
 		DialTimeout: 5 * time.Second,

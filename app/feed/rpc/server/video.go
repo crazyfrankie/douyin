@@ -5,6 +5,7 @@ import (
 	"github.com/crazyfrankie/douyin/app/feed/biz/service"
 	"github.com/crazyfrankie/douyin/rpc_gen/common"
 	"github.com/crazyfrankie/douyin/rpc_gen/feed"
+	"google.golang.org/grpc"
 )
 
 type VideoServer struct {
@@ -14,6 +15,10 @@ type VideoServer struct {
 
 func NewVideoServer(svc *service.FeedService) *VideoServer {
 	return &VideoServer{svc: svc}
+}
+
+func (v *VideoServer) RegisterServer(server *grpc.Server) {
+	feed.RegisterFeedServiceServer(server, v)
 }
 
 func (v *VideoServer) VideoList(ctx context.Context, request *feed.FeedListRequest) (*feed.FeedListResponse, error) {

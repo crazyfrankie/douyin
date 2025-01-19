@@ -20,3 +20,7 @@ func (r *FeedRepo) VideoList(ctx context.Context, vid []int64) ([]dao.Video, err
 func (r *FeedRepo) QueryVideoExists(ctx context.Context, vid int64) (bool, error) {
 	return r.dao.QueryVideoExistsByID(ctx, vid)
 }
+
+func (r *FeedRepo) GetVideoByLastTime(ctx context.Context, time int64) (interface{}, interface{}) {
+
+}

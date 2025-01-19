@@ -19,7 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	FavoriteService_FavoriteCount_FullMethodName = "/feed.FavoriteService/FavoriteCount"
+	FavoriteService_FavoriteCount_FullMethodName  = "/feed.FavoriteService/FavoriteCount"
+	FavoriteService_FavoriteAction_FullMethodName = "/feed.FavoriteService/FavoriteAction"
+	FavoriteService_FavoriteList_FullMethodName   = "/feed.FavoriteService/FavoriteList"
 )
 
 // FavoriteServiceClient is the client API for FavoriteService service.
@@ -27,6 +29,8 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type FavoriteServiceClient interface {
 	FavoriteCount(ctx context.Context, in *FavoriteCountRequest, opts ...grpc.CallOption) (*FavoriteCountResponse, error)
+	FavoriteAction(ctx context.Context, in *FavoriteActionRequest, opts ...grpc.CallOption) (*FavoriteActionResponse, error)
+	FavoriteList(ctx context.Context, in *FavoriteListRequest, opts ...grpc.CallOption) (*FavoriteListResponse, error)
 }
 
 type favoriteServiceClient struct {
@@ -47,11 +51,33 @@ func (c *favoriteServiceClient) FavoriteCount(ctx context.Context, in *FavoriteC
 	return out, nil
 }
 
+func (c *favoriteServiceClient) FavoriteAction(ctx context.Context, in *FavoriteActionRequest, opts ...grpc.CallOption) (*FavoriteActionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(FavoriteActionResponse)
+	err := c.cc.Invoke(ctx, FavoriteService_FavoriteAction_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *favoriteServiceClient) FavoriteList(ctx context.Context, in *FavoriteListRequest, opts ...grpc.CallOption) (*FavoriteListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(FavoriteListResponse)
+	err := c.cc.Invoke(ctx, FavoriteService_FavoriteList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // FavoriteServiceServer is the server API for FavoriteService service.
 // All implementations must embed UnimplementedFavoriteServiceServer
 // for forward compatibility.
 type FavoriteServiceServer interface {
 	FavoriteCount(context.Context, *FavoriteCountRequest) (*FavoriteCountResponse, error)
+	FavoriteAction(context.Context, *FavoriteActionRequest) (*FavoriteActionResponse, error)
+	FavoriteList(context.Context, *FavoriteListRequest) (*FavoriteListResponse, error)
 	mustEmbedUnimplementedFavoriteServiceServer()
 }
 
@@ -64,6 +90,12 @@ type UnimplementedFavoriteServiceServer struct{}
 
 func (UnimplementedFavoriteServiceServer) FavoriteCount(context.Context, *FavoriteCountRequest) (*FavoriteCountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FavoriteCount not implemented")
+}
+func (UnimplementedFavoriteServiceServer) FavoriteAction(context.Context, *FavoriteActionRequest) (*FavoriteActionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FavoriteAction not implemented")
+}
+func (UnimplementedFavoriteServiceServer) FavoriteList(context.Context, *FavoriteListRequest) (*FavoriteListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FavoriteList not implemented")
 }
 func (UnimplementedFavoriteServiceServer) mustEmbedUnimplementedFavoriteServiceServer() {}
 func (UnimplementedFavoriteServiceServer) testEmbeddedByValue()                         {}
@@ -104,6 +136,42 @@ func _FavoriteService_FavoriteCount_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FavoriteService_FavoriteAction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FavoriteActionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FavoriteServiceServer).FavoriteAction(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FavoriteService_FavoriteAction_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FavoriteServiceServer).FavoriteAction(ctx, req.(*FavoriteActionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FavoriteService_FavoriteList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FavoriteListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FavoriteServiceServer).FavoriteList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FavoriteService_FavoriteList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FavoriteServiceServer).FavoriteList(ctx, req.(*FavoriteListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // FavoriteService_ServiceDesc is the grpc.ServiceDesc for FavoriteService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +182,14 @@ var FavoriteService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FavoriteCount",
 			Handler:    _FavoriteService_FavoriteCount_Handler,
+		},
+		{
+			MethodName: "FavoriteAction",
+			Handler:    _FavoriteService_FavoriteAction_Handler,
+		},
+		{
+			MethodName: "FavoriteList",
+			Handler:    _FavoriteService_FavoriteList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

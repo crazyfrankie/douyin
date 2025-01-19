@@ -1,26 +1,12 @@
 package client
 
 import (
-	"github.com/crazyfrankie/douyin/rpc_gen/user"
 	"google.golang.org/grpc"
-	"sync"
 
 	"github.com/crazyfrankie/douyin/rpc_gen/feed"
 )
 
-var (
-	FeedClient feed.FeedServiceClient
-	UserClient user.UserServiceClient
-	once       sync.Once
-)
-
-func InitClient() {
-	once.Do(func() {
-		initFeedClient()
-	})
-}
-
-func initFeedClient() {
+func NewFeedClient() feed.FeedServiceClient {
 	conn, err := grpc.NewClient("localhost:50051")
 	if err != nil {
 		panic(err)
@@ -31,5 +17,5 @@ func initFeedClient() {
 			panic(err)
 		}
 	}(conn)
-	FeedClient = feed.NewFeedServiceClient(conn)
+	return feed.NewFeedServiceClient(conn)
 }

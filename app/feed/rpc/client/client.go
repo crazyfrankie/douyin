@@ -1,25 +1,12 @@
 package client
 
 import (
-	"sync"
-
 	"google.golang.org/grpc"
 
 	"github.com/crazyfrankie/douyin/rpc_gen/user"
 )
 
-var (
-	UserClient user.UserServiceClient
-	once       sync.Once
-)
-
-func InitClient() {
-	once.Do(func() {
-		initUserClient()
-	})
-}
-
-func initUserClient() {
+func NewUserClient() user.UserServiceClient {
 	conn, err := grpc.NewClient("localhost:50051")
 	if err != nil {
 		panic(err)
@@ -30,5 +17,5 @@ func initUserClient() {
 			panic(err)
 		}
 	}()
-	UserClient = user.NewUserServiceClient(conn)
+	return user.NewUserServiceClient(conn)
 }

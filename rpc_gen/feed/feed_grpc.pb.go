@@ -28,8 +28,8 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type FeedServiceClient interface {
-	VideoList(ctx context.Context, in *FeedListRequest, opts ...grpc.CallOption) (*FeedListResponse, error)
-	VideoInfo(ctx context.Context, in *FeedInfoRequest, opts ...grpc.CallOption) (*FeedInfoResponse, error)
+	VideoList(ctx context.Context, in *VideoListRequest, opts ...grpc.CallOption) (*VideoListResponse, error)
+	VideoInfo(ctx context.Context, in *VideoInfoRequest, opts ...grpc.CallOption) (*VideoInfoResponse, error)
 	VideoExists(ctx context.Context, in *VideoExistsRequest, opts ...grpc.CallOption) (*VideoExistsResponse, error)
 }
 
@@ -41,9 +41,9 @@ func NewFeedServiceClient(cc grpc.ClientConnInterface) FeedServiceClient {
 	return &feedServiceClient{cc}
 }
 
-func (c *feedServiceClient) VideoList(ctx context.Context, in *FeedListRequest, opts ...grpc.CallOption) (*FeedListResponse, error) {
+func (c *feedServiceClient) VideoList(ctx context.Context, in *VideoListRequest, opts ...grpc.CallOption) (*VideoListResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(FeedListResponse)
+	out := new(VideoListResponse)
 	err := c.cc.Invoke(ctx, FeedService_VideoList_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -51,9 +51,9 @@ func (c *feedServiceClient) VideoList(ctx context.Context, in *FeedListRequest, 
 	return out, nil
 }
 
-func (c *feedServiceClient) VideoInfo(ctx context.Context, in *FeedInfoRequest, opts ...grpc.CallOption) (*FeedInfoResponse, error) {
+func (c *feedServiceClient) VideoInfo(ctx context.Context, in *VideoInfoRequest, opts ...grpc.CallOption) (*VideoInfoResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(FeedInfoResponse)
+	out := new(VideoInfoResponse)
 	err := c.cc.Invoke(ctx, FeedService_VideoInfo_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -75,8 +75,8 @@ func (c *feedServiceClient) VideoExists(ctx context.Context, in *VideoExistsRequ
 // All implementations must embed UnimplementedFeedServiceServer
 // for forward compatibility.
 type FeedServiceServer interface {
-	VideoList(context.Context, *FeedListRequest) (*FeedListResponse, error)
-	VideoInfo(context.Context, *FeedInfoRequest) (*FeedInfoResponse, error)
+	VideoList(context.Context, *VideoListRequest) (*VideoListResponse, error)
+	VideoInfo(context.Context, *VideoInfoRequest) (*VideoInfoResponse, error)
 	VideoExists(context.Context, *VideoExistsRequest) (*VideoExistsResponse, error)
 	mustEmbedUnimplementedFeedServiceServer()
 }
@@ -88,10 +88,10 @@ type FeedServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedFeedServiceServer struct{}
 
-func (UnimplementedFeedServiceServer) VideoList(context.Context, *FeedListRequest) (*FeedListResponse, error) {
+func (UnimplementedFeedServiceServer) VideoList(context.Context, *VideoListRequest) (*VideoListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VideoList not implemented")
 }
-func (UnimplementedFeedServiceServer) VideoInfo(context.Context, *FeedInfoRequest) (*FeedInfoResponse, error) {
+func (UnimplementedFeedServiceServer) VideoInfo(context.Context, *VideoInfoRequest) (*VideoInfoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VideoInfo not implemented")
 }
 func (UnimplementedFeedServiceServer) VideoExists(context.Context, *VideoExistsRequest) (*VideoExistsResponse, error) {
@@ -119,7 +119,7 @@ func RegisterFeedServiceServer(s grpc.ServiceRegistrar, srv FeedServiceServer) {
 }
 
 func _FeedService_VideoList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(FeedListRequest)
+	in := new(VideoListRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -131,13 +131,13 @@ func _FeedService_VideoList_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: FeedService_VideoList_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FeedServiceServer).VideoList(ctx, req.(*FeedListRequest))
+		return srv.(FeedServiceServer).VideoList(ctx, req.(*VideoListRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _FeedService_VideoInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(FeedInfoRequest)
+	in := new(VideoInfoRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -149,7 +149,7 @@ func _FeedService_VideoInfo_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: FeedService_VideoInfo_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FeedServiceServer).VideoInfo(ctx, req.(*FeedInfoRequest))
+		return srv.(FeedServiceServer).VideoInfo(ctx, req.(*VideoInfoRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

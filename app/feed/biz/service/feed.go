@@ -2,29 +2,38 @@ package service
 
 import (
 	"context"
-	"github.com/crazyfrankie/douyin/rpc_gen/common"
 	"log"
 	"sync"
 
 	"github.com/crazyfrankie/douyin/app/feed/biz"
 	"github.com/crazyfrankie/douyin/app/feed/biz/repository"
 	"github.com/crazyfrankie/douyin/app/feed/biz/repository/dao"
-	"github.com/crazyfrankie/douyin/app/feed/rpc/client"
+	"github.com/crazyfrankie/douyin/rpc_gen/common"
 	"github.com/crazyfrankie/douyin/rpc_gen/user"
 )
 
 type FeedService struct {
-	repo *repository.FeedRepo
+	repo       *repository.FeedRepo
+	userClient user.UserServiceClient
 }
 
-func NewFeedService(repo *repository.FeedRepo) *FeedService {
-	return &FeedService{
-		repo: repo,
-	}
+func NewFeedService(repo *repository.FeedRepo, userClient user.UserServiceClient) *FeedService {
+	return &FeedService{repo: repo, userClient: userClient}
 }
 
 // Feed returns a list of recommended videos for logged-in user
 func (s *FeedService) Feed(ctx context.Context, req biz.FeedReq) (biz.FeedResp, error) {
+	//var lastTime int64
+	//if req.LatestTime == 0 {
+	//	lastTime = time.Now().Unix()
+	//} else {
+	//	lastTime = req.LatestTime
+	//}
+	//dbVideos, err := s.repo.GetVideoByLastTime(ctx, req.LatestTime)
+	//if err != nil {
+	//
+	//}
+
 	return biz.FeedResp{}, nil
 }
 
@@ -40,7 +49,7 @@ func (s *FeedService) VideoInfo(ctx context.Context, vid, uid int64) (*common.Vi
 
 	// Get user information
 	go func() {
-		resp, err := client.UserClient.GetUserInfo(ctx, &user.GetUserInfoRequest{
+		resp, err := s.userClient.GetUserInfo(ctx, &user.GetUserInfoRequest{
 			UserId: uid,
 		})
 		if err != nil {
@@ -65,7 +74,7 @@ func (s *FeedService) VideoInfo(ctx context.Context, vid, uid int64) (*common.Vi
 
 	// Get comment count
 	go func() {
-	
+
 	}()
 
 	wg.Wait()

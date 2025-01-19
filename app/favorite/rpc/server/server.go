@@ -2,6 +2,8 @@ package server
 
 import (
 	"context"
+	"google.golang.org/grpc"
+
 	"github.com/crazyfrankie/douyin/app/favorite/biz/service"
 	"github.com/crazyfrankie/douyin/rpc_gen/favorite"
 )
@@ -13,6 +15,10 @@ type FavoriteServer struct {
 
 func NewFavoriteServer(svc *service.FavoriteService) *FavoriteServer {
 	return &FavoriteServer{svc: svc}
+}
+
+func (f *FavoriteServer) RegisterServer(server *grpc.Server) {
+	favorite.RegisterFavoriteServiceServer(server, f)
 }
 
 func (f *FavoriteServer) FavoriteCount(ctx context.Context, request *favorite.FavoriteCountRequest) (*favorite.FavoriteCountResponse, error) {

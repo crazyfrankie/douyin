@@ -9,6 +9,8 @@ import "idl/common.proto";
 // User service definition
 service UserService {
   rpc GetUserInfo (GetUserInfoRequest) returns (GetUserInfoResponse);
+  rpc Register (RegisterRequest) returns (RegisterResponse);
+  rpc Login (LoginRequest) returns (LoginResponse);
 }
 
 // GetUserInfo request and response messages
@@ -19,3 +21,23 @@ message GetUserInfoRequest {
 message GetUserInfoResponse {
   common.User user = 1;
 }
+
+message RegisterRequest {
+  string name = 1;
+  string password = 2;
+}
+
+message RegisterResponse {
+  string token = 1;
+}
+
+message LoginRequest {
+  string name = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  string token = 1;
+}
+
+
