@@ -2,7 +2,7 @@ package dao
 
 import (
 	"context"
-	
+
 	"gorm.io/gorm"
 )
 
@@ -13,7 +13,7 @@ type Video struct {
 	CoverURL string
 	Title    string
 	Ctime    int64
-	Utime    int64
+	Utime    int64 `gorm:"index:utime_index"`
 }
 
 type FeedDao struct {
@@ -23,10 +23,6 @@ type FeedDao struct {
 func NewFeedDao(db *gorm.DB) *FeedDao {
 	return &FeedDao{db: db}
 }
-
-//func (d *VideoDao) CreateVideo(ctx context.Context, video model.Video) error {
-//
-//}
 
 func (d *FeedDao) VideoList(ctx context.Context, vid []int64) ([]Video, error) {
 	var videos []Video
@@ -53,4 +49,14 @@ func (d *FeedDao) QueryVideoExistsByID(ctx context.Context, vid int64) (bool, er
 	}
 
 	return true, nil
+}
+
+func (d *FeedDao) GetVideoByLastTime(ctx context.Context, time int64) ([]Video, error) {
+	var videos []Video
+	err := d.db.WithContext(ctx).Model(&Video{}).Where("utime < ?", time).Find(&videos).Error
+	if err != nil {
+		return videos, err
+	}
+
+	return videos, nil
 }

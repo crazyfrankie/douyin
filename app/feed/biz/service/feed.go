@@ -4,46 +4,89 @@ import (
 	"context"
 	"log"
 	"sync"
+	"time"
 
-	"github.com/crazyfrankie/douyin/app/feed/biz"
 	"github.com/crazyfrankie/douyin/app/feed/biz/repository"
 	"github.com/crazyfrankie/douyin/app/feed/biz/repository/dao"
 	"github.com/crazyfrankie/douyin/rpc_gen/common"
+	"github.com/crazyfrankie/douyin/rpc_gen/favorite"
+	"github.com/crazyfrankie/douyin/rpc_gen/feed"
 	"github.com/crazyfrankie/douyin/rpc_gen/user"
 )
 
 type FeedService struct {
-	repo       *repository.FeedRepo
-	userClient user.UserServiceClient
+	repo        *repository.FeedRepo
+	userClient  user.UserServiceClient
+	favorClient favorite.FavoriteServiceClient
 }
 
-func NewFeedService(repo *repository.FeedRepo, userClient user.UserServiceClient) *FeedService {
-	return &FeedService{repo: repo, userClient: userClient}
+func NewFeedService(repo *repository.FeedRepo, userClient user.UserServiceClient, favorClient favorite.FavoriteServiceClient) *FeedService {
+	return &FeedService{repo: repo, userClient: userClient, favorClient: favorClient}
 }
 
 // Feed returns a list of recommended videos for logged-in user
-func (s *FeedService) Feed(ctx context.Context, req biz.FeedReq) (biz.FeedResp, error) {
-	//var lastTime int64
-	//if req.LatestTime == 0 {
-	//	lastTime = time.Now().Unix()
-	//} else {
-	//	lastTime = req.LatestTime
-	//}
-	//dbVideos, err := s.repo.GetVideoByLastTime(ctx, req.LatestTime)
-	//if err != nil {
-	//
-	//}
+func (s *FeedService) Feed(ctx context.Context, req *feed.FeedRequest) (*feed.FeedResponse, error) {
+	var lastTime int64
+	if req.LatestTime == 0 {
+		lastTime = time.Now().Unix()
+	} else {
+		lastTime = req.LatestTime
+	}
+	dbVideos, err := s.repo.GetVideoByLastTime(ctx, lastTime)
+	if err != nil {
+		return &feed.FeedResponse{}, err
+	}
 
-	return biz.FeedResp{}, nil
+	var videos []*common.Video
+	for _, v := range dbVideos {
+		resp, err := s.VideoInfo(ctx, &feed.VideoInfoRequest{
+			VideoId: v.ID,
+			UserId:  v.AuthorID,
+		})
+		if err != nil {
+			return &feed.FeedResponse{}, err
+		}
+
+		video := &common.Video{
+			Id: resp.Id,
+			Author: &common.User{
+				Id:              resp.Author.Id,
+				Name:            resp.Author.Name,
+				Avatar:          resp.Author.Avatar,
+				Signature:       resp.Author.Signature,
+				BackgroundImage: resp.Author.BackgroundImage,
+				FollowCount:     resp.Author.FollowCount,
+				FollowerCount:   resp.Author.FollowerCount,
+				TotalFavorited:  resp.Author.TotalFavorited,
+				WorkCount:       resp.Author.WorkCount,
+				FavoriteCount:   resp.Author.FavoriteCount,
+			},
+			PlayUrl:       resp.PlayUrl,
+			CoverUrl:      resp.CoverUrl,
+			CommentCount:  resp.CommentCount,
+			FavoriteCount: resp.FavoriteCount,
+			Title:         resp.Title,
+			IsFavorite:    false,
+		}
+
+		videos = append(videos, video)
+	}
+
+	return &feed.FeedResponse{
+		Videos:   videos,
+		NextTime: dbVideos[len(dbVideos)-1].Utime,
+	}, nil
 }
 
 func (s *FeedService) VideoList(ctx context.Context, vid []int64) ([]dao.Video, error) {
 	return s.repo.VideoList(ctx, vid)
 }
 
-func (s *FeedService) VideoInfo(ctx context.Context, vid, uid int64) (*common.Video, error) {
+func (s *FeedService) VideoInfo(ctx context.Context, req *feed.VideoInfoRequest) (*common.Video, error) {
+	uid, vid := req.GetUserId(), req.GetVideoId()
+
 	var wg sync.WaitGroup
-	wg.Add(2)
+	wg.Add(4)
 
 	var video *common.Video
 
@@ -60,16 +103,39 @@ func (s *FeedService) VideoInfo(ctx context.Context, vid, uid int64) (*common.Vi
 			Name:            resp.User.Name,
 			Avatar:          resp.User.Name,
 			Signature:       resp.User.Signature,
+			BackgroundImage: resp.User.BackgroundImage,
 			FollowCount:     resp.User.FollowCount,
 			FollowerCount:   resp.User.FollowerCount,
-			WorkCount:       resp.User.WorkCount,
-			BackgroundImage: resp.User.BackgroundImage,
 			TotalFavorited:  resp.User.TotalFavorited,
+			WorkCount:       resp.User.WorkCount,
 			FavoriteCount:   resp.User.FavoriteCount,
 			IsFollow:        resp.User.IsFollow,
 		}
 
 		wg.Done()
+	}()
+
+	// Get the number of video likes
+	go func() {
+		resp, err := s.favorClient.VideoFavoriteCount(ctx, &favorite.VideoFavoriteCountRequest{
+			VideoId: vid,
+		})
+		if err != nil {
+			log.Printf("VideoFavoriteCount func error:" + err.Error())
+		}
+		video.FavoriteCount = resp.Count
+	}()
+
+	// Get is_favorite
+	go func() {
+		resp, err := s.favorClient.IsFavorite(ctx, &favorite.IsFavoriteRequest{
+			VideoId: vid,
+			UserId:  uid,
+		})
+		if err != nil {
+			log.Printf("IsFavorite func error:" + err.Error())
+		}
+		video.IsFavorite = resp.IsFavorite
 	}()
 
 	// Get comment count

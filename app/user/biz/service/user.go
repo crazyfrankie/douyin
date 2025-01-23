@@ -2,16 +2,18 @@ package service
 
 import (
 	"context"
+	"github.com/crazyfrankie/douyin/bff/mw"
 	"sync"
 
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/crazyfrankie/douyin/app/user/biz"
 	"github.com/crazyfrankie/douyin/app/user/biz/repository"
 	"github.com/crazyfrankie/douyin/app/user/biz/repository/dao"
 	"github.com/crazyfrankie/douyin/app/user/common/errno"
 	"github.com/crazyfrankie/douyin/rpc_gen/common"
 	"github.com/crazyfrankie/douyin/rpc_gen/favorite"
+	"github.com/crazyfrankie/douyin/rpc_gen/publish"
+	"github.com/crazyfrankie/douyin/rpc_gen/user"
 )
 
 var (
@@ -19,15 +21,16 @@ var (
 )
 
 type UserService struct {
-	repo        *repository.UserRepo
-	favorClient favorite.FavoriteServiceClient
+	repo          *repository.UserRepo
+	favorClient   favorite.FavoriteServiceClient
+	publishClient publish.PublishServiceClient
 }
 
-func NewUserService(repo *repository.UserRepo, favorClient favorite.FavoriteServiceClient) *UserService {
-	return &UserService{repo: repo, favorClient: favorClient}
+func NewUserService(repo *repository.UserRepo, favorClient favorite.FavoriteServiceClient, publishClient publish.PublishServiceClient) *UserService {
+	return &UserService{repo: repo, favorClient: favorClient, publishClient: publishClient}
 }
 
-func (s *UserService) Register(ctx context.Context, req biz.RegisterReq) (string, error) {
+func (s *UserService) Register(ctx context.Context, req *user.RegisterRequest) (string, error) {
 	password, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return "", err
@@ -48,7 +51,7 @@ func (s *UserService) Register(ctx context.Context, req biz.RegisterReq) (string
 	}
 
 	var token string
-	token, err = GenerateToken(uid)
+	token, err = mw.GenerateToken(uid)
 	if err != nil {
 		return "", err
 	}
@@ -56,7 +59,7 @@ func (s *UserService) Register(ctx context.Context, req biz.RegisterReq) (string
 	return token, nil
 }
 
-func (s *UserService) Login(ctx context.Context, req biz.LoginReq) (string, error) {
+func (s *UserService) Login(ctx context.Context, req *user.LoginRequest) (string, error) {
 	u, err := s.repo.FindByName(ctx, req.Name)
 	if err != nil {
 		return "", err
@@ -68,7 +71,7 @@ func (s *UserService) Login(ctx context.Context, req biz.LoginReq) (string, erro
 	}
 
 	var token string
-	token, err = GenerateToken(u.ID)
+	token, err = mw.GenerateToken(u.ID)
 	if err != nil {
 		return "", err
 	}
@@ -76,13 +79,16 @@ func (s *UserService) Login(ctx context.Context, req biz.LoginReq) (string, erro
 	return token, nil
 }
 
-func (s *UserService) GetUserInfo(ctx context.Context, uid int64) (*common.User, error) {
+func (s *UserService) GetUserInfo(ctx context.Context, req *user.GetUserInfoRequest) (*common.User, error) {
+	uid := req.GetUserId()
+
 	res := &common.User{}
-	errChan := make(chan error, 2)
+	errChan := make(chan error, 4)
 
 	var wg sync.WaitGroup
-	wg.Add(2)
+	wg.Add(4)
 
+	// Get user dao info
 	go func() {
 		u, err := s.repo.FindByID(ctx, uid)
 		if err != nil {
@@ -97,6 +103,7 @@ func (s *UserService) GetUserInfo(ctx context.Context, uid int64) (*common.User,
 		wg.Done()
 	}()
 
+	// Get user favorite count
 	go func() {
 		favCountResp, err := s.favorClient.FavoriteCount(ctx, &favorite.FavoriteCountRequest{
 			UserId: uid,
@@ -105,6 +112,36 @@ func (s *UserService) GetUserInfo(ctx context.Context, uid int64) (*common.User,
 			errChan <- err
 		} else {
 			res.FavoriteCount = favCountResp.Count
+		}
+		wg.Done()
+	}()
+
+	var videoIds []int64
+	// Get user published videos count (work count)
+	go func() {
+		videosCountResp, err := s.publishClient.PublishCount(ctx, &publish.PublishCountRequest{
+			UserId: uid,
+		})
+		if err != nil {
+			errChan <- err
+		} else {
+			res.WorkCount = int64(len(videosCountResp.VideoId))
+		}
+
+		copy(videoIds, videosCountResp.VideoId)
+
+		wg.Done()
+	}()
+
+	// Get user total favorited count
+	go func() {
+		favorited, err := s.favorClient.UserFavorited(ctx, &favorite.UserFavoritedRequest{
+			VideoId: videoIds,
+		})
+		if err != nil {
+			errChan <- err
+		} else {
+			res.TotalFavorited = favorited.Count
 		}
 		wg.Done()
 	}()

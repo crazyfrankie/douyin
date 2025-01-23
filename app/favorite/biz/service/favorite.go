@@ -2,15 +2,13 @@ package service
 
 import (
 	"context"
-	"log"
-	"sync"
 
-	"github.com/crazyfrankie/douyin/app/favorite/biz"
 	"github.com/crazyfrankie/douyin/app/favorite/biz/repository"
 	"github.com/crazyfrankie/douyin/app/favorite/biz/repository/dao"
 	"github.com/crazyfrankie/douyin/app/favorite/common/constants"
 	"github.com/crazyfrankie/douyin/app/favorite/common/errno"
 	"github.com/crazyfrankie/douyin/rpc_gen/common"
+	"github.com/crazyfrankie/douyin/rpc_gen/favorite"
 	"github.com/crazyfrankie/douyin/rpc_gen/feed"
 )
 
@@ -23,10 +21,13 @@ func NewFavoriteService(repo *repository.FavoriteRepo, feedClient feed.FeedServi
 	return &FavoriteService{repo: repo, feedClient: feedClient}
 }
 
-func (s *FavoriteService) FavoriteAction(ctx context.Context, req biz.FavoriteActionReq, uid int64) error {
+// FavoriteAction adds or deletes a like relationship between the current user and the current video.
+func (s *FavoriteService) FavoriteAction(ctx context.Context, req *favorite.FavoriteActionRequest) error {
+	vid, uid := req.GetVideoId(), req.GetUserId()
+
 	// 查询视频是否存在
 	_, err := s.feedClient.VideoExists(ctx, &feed.VideoExistsRequest{
-		VideoId: req.VideoID,
+		VideoId: req.GetVideoId(),
 	})
 	if err != nil {
 		return err
@@ -36,12 +37,12 @@ func (s *FavoriteService) FavoriteAction(ctx context.Context, req biz.FavoriteAc
 		return errno.ParamErr
 	}
 
-	favorite := dao.Favorite{
-		VideoID: req.VideoID,
+	fav := dao.Favorite{
+		VideoID: vid,
 		UserID:  uid,
 	}
 
-	exists, err := s.repo.GetIsFavorite(ctx, favorite.VideoID, favorite.UserID)
+	exists, err := s.repo.GetIsFavorite(ctx, fav.VideoID, fav.UserID)
 	if err != nil {
 		return err
 	}
@@ -49,18 +50,21 @@ func (s *FavoriteService) FavoriteAction(ctx context.Context, req biz.FavoriteAc
 		if exists {
 			return errno.FavoriteRelationAlreadyExistErr
 		}
-		err = s.repo.AddFavorite(ctx, favorite)
+		err = s.repo.AddFavorite(ctx, fav)
 	} else {
 		if !exists {
 			return errno.FavoriteRelationNotExistErr
 		}
-		err = s.repo.DelFavorite(ctx, favorite)
+		err = s.repo.DelFavorite(ctx, fav)
 	}
 
 	return err
 }
 
-func (s *FavoriteService) FavoriteList(ctx context.Context, uid int64) ([]*common.Video, error) {
+// FavoriteList returns the list of videos liked by the current user.
+func (s *FavoriteService) FavoriteList(ctx context.Context, req *favorite.FavoriteListRequest) ([]*common.Video, error) {
+	uid := req.GetUserId()
+
 	favorsID, err := s.repo.GetFavoriteVideosByID(ctx, uid)
 	if err != nil {
 		return []*common.Video{}, err
@@ -84,30 +88,6 @@ func (s *FavoriteService) FavoriteList(ctx context.Context, uid int64) ([]*commo
 			return []*common.Video{}, err
 		}
 
-		var wg sync.WaitGroup
-		wg.Add(2)
-
-		// Get the number of video likes
-		go func() {
-			var err error
-			resp.Video.FavoriteCount, err = s.repo.GetVideoFavoriteCount(ctx, item.Id)
-			if err != nil {
-				log.Printf("GetVideoFavoriteCount func error:" + err.Error())
-			}
-			wg.Done()
-		}()
-
-		// Get favorite exist
-		go func() {
-			var err error
-			resp.Video.IsFavorite, err = s.repo.GetIsFavorite(ctx, item.Id, uid)
-			if err != nil {
-				log.Printf("GetIsFavorite func error:" + err.Error())
-			}
-			wg.Done()
-		}()
-
-		wg.Wait()
 		resp.Video.Id = item.Id
 		resp.Video.PlayUrl = item.PlayUrl
 		resp.Video.CoverUrl = item.CoverUrl
@@ -119,6 +99,22 @@ func (s *FavoriteService) FavoriteList(ctx context.Context, uid int64) ([]*commo
 	return videos, nil
 }
 
+// GetUserFavoriteCount returns the total number of likes for the current user.
 func (s *FavoriteService) GetUserFavoriteCount(ctx context.Context, vid int64) (int64, error) {
 	return s.repo.GetUserFavoriteCount(ctx, vid)
+}
+
+// GetUserFavoritedCount returns the total number of likes for the current user's posts.
+func (s *FavoriteService) GetUserFavoritedCount(ctx context.Context, vid []int64) (int64, error) {
+	return s.repo.GetUserFavoritedCount(ctx, vid)
+}
+
+// GetVideoFavoriteCount returns the total number of likes for the current video.
+func (s *FavoriteService) GetVideoFavoriteCount(ctx context.Context, vid int64) (int64, error) {
+	return s.repo.GetVideoFavoriteCount(ctx, vid)
+}
+
+// GetIsFavorite returns whether the current user has liked the current video.
+func (s *FavoriteService) GetIsFavorite(ctx context.Context, videoId, uid int64) (bool, error) {
+	return s.repo.GetIsFavorite(ctx, videoId, uid)
 }

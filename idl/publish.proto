@@ -1,0 +1,38 @@
+syntax="proto3";
+
+package publish;
+
+option go_package="/publish";
+
+import "idl/common.proto";
+
+message PublishActionRequest {
+  bytes data = 1;
+  string title = 2;
+}
+
+message PublishActionResponse {
+
+}
+
+message PublishListRequest {
+ int64 user_id = 1;
+}
+
+message PublishListResponse {
+  repeated common.Video videos = 1;
+}
+
+message PublishCountRequest {
+  int64 user_id = 1;
+}
+
+message PublishCountResponse {
+  repeated int64 video_id = 1;
+}
+
+service PublishService {
+  rpc PublishAction(PublishActionRequest) returns (PublishActionResponse);
+  rpc PublishList(PublishListRequest) returns (PublishListResponse);
+  rpc PublishCount(PublishCountRequest) returns (PublishCountResponse);
+}

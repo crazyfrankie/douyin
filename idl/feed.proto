@@ -6,6 +6,14 @@ option go_package = "/feed";
 
 import "idl/common.proto";
 
+message FeedRequest {
+  int64 latest_time = 1;
+}
+
+message FeedResponse {
+  repeated common.Video videos = 1;
+  int64 next_time = 2;
+}
 
 message VideoListRequest {
   repeated int64 video_ids = 1;
@@ -33,6 +41,7 @@ message VideoExistsResponse {
 }
 
 service FeedService {
+  rpc Feed(FeedRequest) returns (FeedResponse);
   rpc VideoList(VideoListRequest) returns (VideoListResponse);
   rpc VideoInfo(VideoInfoRequest) returns (VideoInfoResponse);
   rpc VideoExists(VideoExistsRequest) returns (VideoExistsResponse);

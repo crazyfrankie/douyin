@@ -1,0 +1,5 @@
+server:
+  user: "localhost:9090"
+  favoirte: "localhost:9091"
+  feed: "localhost:9092"
+  publish: "localhost:9093"

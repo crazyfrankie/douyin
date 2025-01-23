@@ -7,14 +7,13 @@
 package main
 
 import (
-	"github.com/crazyfrankie/douyin/app/feed/biz/handler"
 	"github.com/crazyfrankie/douyin/app/feed/biz/repository"
 	"github.com/crazyfrankie/douyin/app/feed/biz/repository/dao"
+	"github.com/crazyfrankie/douyin/app/feed/biz/rpc"
+	"github.com/crazyfrankie/douyin/app/feed/biz/rpc/client"
+	"github.com/crazyfrankie/douyin/app/feed/biz/rpc/server"
 	"github.com/crazyfrankie/douyin/app/feed/biz/service"
 	"github.com/crazyfrankie/douyin/app/feed/ioc"
-	"github.com/crazyfrankie/douyin/app/feed/rpc"
-	"github.com/crazyfrankie/douyin/app/feed/rpc/client"
-	"github.com/crazyfrankie/douyin/app/feed/rpc/server"
 )
 
 // Injectors from wire.go:
@@ -24,14 +23,12 @@ func InitApp() *ioc.App {
 	feedDao := dao.NewFeedDao(db)
 	feedRepo := repository.NewFeedRepo(feedDao)
 	userServiceClient := client.NewUserClient()
-	feedService := service.NewFeedService(feedRepo, userServiceClient)
+	favoriteServiceClient := client.NewFavoriteClient()
+	feedService := service.NewFeedService(feedRepo, userServiceClient, favoriteServiceClient)
 	videoServer := server.NewVideoServer(feedService)
 	rpcServer := rpc.NewFeedRPCServer(videoServer)
-	feedHandler := handler.NewFeedHandler(feedService)
-	engine := ioc.InitWeb(feedHandler)
 	app := &ioc.App{
-		RPCServer:  rpcServer,
-		HTTPServer: engine,
+		RPCServer: rpcServer,
 	}
 	return app
 }

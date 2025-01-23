@@ -3,14 +3,13 @@
 package main
 
 import (
-	"github.com/crazyfrankie/douyin/app/user/biz/handler"
 	"github.com/crazyfrankie/douyin/app/user/biz/repository"
 	"github.com/crazyfrankie/douyin/app/user/biz/repository/dao"
+	"github.com/crazyfrankie/douyin/app/user/biz/rpc"
+	"github.com/crazyfrankie/douyin/app/user/biz/rpc/client"
+	"github.com/crazyfrankie/douyin/app/user/biz/rpc/server"
 	"github.com/crazyfrankie/douyin/app/user/biz/service"
 	"github.com/crazyfrankie/douyin/app/user/ioc"
-	"github.com/crazyfrankie/douyin/app/user/rpc"
-	"github.com/crazyfrankie/douyin/app/user/rpc/client"
-	"github.com/crazyfrankie/douyin/app/user/rpc/server"
 	"github.com/google/wire"
 )
 
@@ -20,13 +19,12 @@ func InitApp() *ioc.App {
 		dao.NewUserDao,
 		repository.NewUserRepo,
 		service.NewUserService,
-		handler.NewHandler,
 
 		client.NewFavoriteClient,
+		client.NewPublishClient,
 
 		server.NewUserServer,
 		rpc.NewUserRPCServer,
-		ioc.InitWeb,
 
 		wire.Struct(new(ioc.App), "*"),
 	)

@@ -84,3 +84,17 @@ func (d *FavoriteDao) GetUserFavoriteCount(ctx context.Context, uid int64) (int6
 
 	return sum, nil
 }
+
+func (d *FavoriteDao) GetUserFavoritedCount(ctx context.Context, vid []int64) (int64, error) {
+	var sum int64
+	for _, v := range vid {
+		var count int64
+		err := d.db.WithContext(ctx).Model(&Favorite{}).Where("video_id = ?", v).Count(&count).Error
+		if err != nil {
+			return -1, err
+		}
+		sum += count
+	}
+
+	return sum, nil
+}

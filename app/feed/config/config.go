@@ -16,18 +16,13 @@ var (
 )
 
 type Config struct {
-	Env    string
-	Server Server `yaml:"server"`
-	MySQL  MySQL  `yaml:"mysql"`
-	Redis  Redis  `yaml:"redis"`
-	Kafka  Kafka  `yaml:"kafka"`
-	Etcd   ETCD   `yaml:"etcd"`
-	RPC    RPC    `yaml:"grpc"`
-	JWT    JWT    `yaml:"jwt"`
-}
-
-type Server struct {
-	Address string `yaml:"address"`
+	Env   string
+	MySQL MySQL `yaml:"mysql"`
+	Redis Redis `yaml:"redis"`
+	Kafka Kafka `yaml:"kafka"`
+	Etcd  ETCD  `yaml:"etcd"`
+	RPC   RPC   `yaml:"grpc"`
+	JWT   JWT   `yaml:"jwt"`
 }
 
 type MySQL struct {

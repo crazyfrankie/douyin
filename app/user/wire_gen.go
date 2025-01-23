@@ -7,14 +7,13 @@
 package main
 
 import (
-	"github.com/crazyfrankie/douyin/app/user/biz/handler"
 	"github.com/crazyfrankie/douyin/app/user/biz/repository"
 	"github.com/crazyfrankie/douyin/app/user/biz/repository/dao"
+	"github.com/crazyfrankie/douyin/app/user/biz/rpc"
+	"github.com/crazyfrankie/douyin/app/user/biz/rpc/client"
+	"github.com/crazyfrankie/douyin/app/user/biz/rpc/server"
 	"github.com/crazyfrankie/douyin/app/user/biz/service"
 	"github.com/crazyfrankie/douyin/app/user/ioc"
-	"github.com/crazyfrankie/douyin/app/user/rpc"
-	"github.com/crazyfrankie/douyin/app/user/rpc/client"
-	"github.com/crazyfrankie/douyin/app/user/rpc/server"
 )
 
 // Injectors from wire.go:
@@ -24,14 +23,12 @@ func InitApp() *ioc.App {
 	userDao := dao.NewUserDao(db)
 	userRepo := repository.NewUserRepo(userDao)
 	favoriteServiceClient := client.NewFavoriteClient()
-	userService := service.NewUserService(userRepo, favoriteServiceClient)
+	publishServiceClient := client.NewPublishClient()
+	userService := service.NewUserService(userRepo, favoriteServiceClient, publishServiceClient)
 	userServer := server.NewUserServer(userService)
 	rpcServer := rpc.NewUserRPCServer(userServer)
-	handlerHandler := handler.NewHandler(userService)
-	engine := ioc.InitWeb(handlerHandler)
 	app := &ioc.App{
-		RPCServer:  rpcServer,
-		HTTPServer: engine,
+		RPCServer: rpcServer,
 	}
 	return app
 }

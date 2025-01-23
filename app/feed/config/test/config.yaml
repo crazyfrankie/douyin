@@ -1,5 +1,5 @@
-server:
-  address: "localhost:9002"
+rpc:
+  address: "localhost:50053"
 
 mysql:
   dsn: "%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local"
@@ -12,9 +12,6 @@ redis:
 
 etcd:
   address: "localhost:2379"
-
-rpc:
-  address: "localhost:50051"
 
 jwt:
   secretKey: "xT4vC0eM3tR2lP7kH8gD0kT0oN4oM6yX"

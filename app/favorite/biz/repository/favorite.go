@@ -37,3 +37,7 @@ func (r *FavoriteRepo) GetVideoFavoriteCount(ctx context.Context, vid int64) (in
 func (r *FavoriteRepo) GetUserFavoriteCount(ctx context.Context, uid int64) (int64, error) {
 	return r.dao.GetUserFavoriteCount(ctx, uid)
 }
+
+func (r *FavoriteRepo) GetUserFavoritedCount(ctx context.Context, vid []int64) (int64, error) {
+	return r.dao.GetUserFavoritedCount(ctx, vid)
+}
