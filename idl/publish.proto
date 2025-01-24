@@ -9,6 +9,7 @@ import "idl/common.proto";
 message PublishActionRequest {
   bytes data = 1;
   string title = 2;
+  int64 user_id = 3;
 }
 
 message PublishActionResponse {

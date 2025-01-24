@@ -7,7 +7,7 @@ import (
 	"github.com/crazyfrankie/douyin/rpc_gen/user"
 )
 
-func NewUserClient() user.UserServiceClient {
+func InitUserClient() user.UserServiceClient {
 	conn, err := grpc.NewClient("localhost:50051")
 	if err != nil {
 		panic(err)
@@ -21,7 +21,7 @@ func NewUserClient() user.UserServiceClient {
 	return user.NewUserServiceClient(conn)
 }
 
-func NewFavoriteClient() favorite.FavoriteServiceClient {
+func InitFavoriteClient() favorite.FavoriteServiceClient {
 	conn, err := grpc.NewClient("localhost:50052")
 	if err != nil {
 		panic(err)

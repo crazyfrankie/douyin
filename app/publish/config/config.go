@@ -23,6 +23,7 @@ type Config struct {
 	Etcd  ETCD  `yaml:"etcd"`
 	RPC   RPC   `yaml:"grpc"`
 	JWT   JWT   `yaml:"jwt"`
+	MINIO MinIO `yaml:"minio"`
 }
 
 type MySQL struct {
@@ -46,6 +47,12 @@ type ETCD struct {
 
 type JWT struct {
 	SecretKey string `yaml:"secretKey"`
+}
+
+type MinIO struct {
+	EndPoint  string `yaml:"endpoint"`
+	AccessKey string `yaml:"access_key"`
+	SecretKey string `yaml:"secret_key"`
 }
 
 func GetConf() *Config {

@@ -22,7 +22,7 @@ func InitApp() *ioc.App {
 	db := ioc.InitDB()
 	favoriteDao := dao.NewFavoriteDao(db)
 	favoriteRepo := repository.NewFavoriteRepo(favoriteDao)
-	feedServiceClient := client.NewFeedClient()
+	feedServiceClient := client.InitFeedClient()
 	favoriteService := service.NewFavoriteService(favoriteRepo, feedServiceClient)
 	favoriteServer := server.NewFavoriteServer(favoriteService)
 	rpcServer := rpc.NewFavoriteRPCServer(favoriteServer)

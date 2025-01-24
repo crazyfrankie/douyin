@@ -15,3 +15,8 @@ etcd:
 
 jwt:
   secretKey: "xT4vC0eM3tR2lP7kH8gD0kT0oN4oM6yX"
+
+minio:
+  endpoint: "localhost:9000"
+  minio_access_key: "Phmvb9D6JUCMdlfyPOiI"
+  minio_secret_key: "01nJjJQ9J3BH8VpIsfD472vXHldpeg97BIz8FCvM"

@@ -1,6 +1,8 @@
 package constants
 
 const (
-	FavoriteActionType   = 1
-	UnFavoriteActionType = 2
+	MiniouseSSL = false
+
+	MinioVideoBucketName = "videobucket"
+	MinioImgBucketName   = "imagebucket"
 )

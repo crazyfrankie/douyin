@@ -20,7 +20,7 @@ func InitApp() *ioc.App {
 		repository.NewFavoriteRepo,
 		service.NewFavoriteService,
 
-		client.NewFeedClient,
+		client.InitFeedClient,
 		server.NewFavoriteServer,
 
 		rpc.NewFavoriteRPCServer,

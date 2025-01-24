@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"github.com/crazyfrankie/douyin/bff/mw"
 	"sync"
 
 	"golang.org/x/crypto/bcrypt"
@@ -51,7 +50,7 @@ func (s *UserService) Register(ctx context.Context, req *user.RegisterRequest) (
 	}
 
 	var token string
-	token, err = mw.GenerateToken(uid)
+	token, err = GenerateToken(uid)
 	if err != nil {
 		return "", err
 	}
@@ -71,7 +70,7 @@ func (s *UserService) Login(ctx context.Context, req *user.LoginRequest) (string
 	}
 
 	var token string
-	token, err = mw.GenerateToken(u.ID)
+	token, err = GenerateToken(u.ID)
 	if err != nil {
 		return "", err
 	}

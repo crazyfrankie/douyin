@@ -48,9 +48,9 @@ func (s *FeedService) Feed(ctx context.Context, req *feed.FeedRequest) (*feed.Fe
 		}
 
 		video := &common.Video{
-			Id: resp.Id,
+			Id: v.ID,
 			Author: &common.User{
-				Id:              resp.Author.Id,
+				Id:              v.AuthorID,
 				Name:            resp.Author.Name,
 				Avatar:          resp.Author.Avatar,
 				Signature:       resp.Author.Signature,
@@ -61,12 +61,12 @@ func (s *FeedService) Feed(ctx context.Context, req *feed.FeedRequest) (*feed.Fe
 				WorkCount:       resp.Author.WorkCount,
 				FavoriteCount:   resp.Author.FavoriteCount,
 			},
-			PlayUrl:       resp.PlayUrl,
-			CoverUrl:      resp.CoverUrl,
+			PlayUrl:       v.PlayURL,
+			CoverUrl:      v.CoverURL,
+			Title:         v.Title,
+			IsFavorite:    false,
 			CommentCount:  resp.CommentCount,
 			FavoriteCount: resp.FavoriteCount,
-			Title:         resp.Title,
-			IsFavorite:    false,
 		}
 
 		videos = append(videos, video)

@@ -20,8 +20,8 @@ func InitApp() *ioc.App {
 		repository.NewUserRepo,
 		service.NewUserService,
 
-		client.NewFavoriteClient,
-		client.NewPublishClient,
+		client.InitFavoriteClient,
+		client.InitPublishClient,
 
 		server.NewUserServer,
 		rpc.NewUserRPCServer,

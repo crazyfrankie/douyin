@@ -6,7 +6,7 @@ import (
 	"github.com/crazyfrankie/douyin/rpc_gen/feed"
 )
 
-func NewFeedClient() feed.FeedServiceClient {
+func InitFeedClient() feed.FeedServiceClient {
 	conn, err := grpc.NewClient("localhost:50053")
 	if err != nil {
 		panic(err)
