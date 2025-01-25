@@ -6,7 +6,7 @@ import (
 )
 
 func InitClient() feed.FeedServiceClient {
-	conn, err := grpc.NewClient("localhost:50051")
+	conn, err := grpc.NewClient("localhost:50053")
 	if err != nil {
 		panic(err)
 	}

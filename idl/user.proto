@@ -11,11 +11,13 @@ service UserService {
   rpc GetUserInfo (GetUserInfoRequest) returns (GetUserInfoResponse);
   rpc Register (RegisterRequest) returns (RegisterResponse);
   rpc Login (LoginRequest) returns (LoginResponse);
+  rpc GetUserExists (GetUserExistsRequest) returns (GetUserExistsResponse);
 }
 
 // GetUserInfo request and response messages
 message GetUserInfoRequest {
   int64 user_id = 1;
+  int64 user_id_to_query = 2;
 }
 
 message GetUserInfoResponse {
@@ -39,5 +41,14 @@ message LoginRequest {
 message LoginResponse {
   string token = 1;
 }
+
+message GetUserExistsRequest {
+  int64 user_id = 1;
+}
+
+message GetUserExistsResponse {
+  bool exists = 1;
+}
+
 
 

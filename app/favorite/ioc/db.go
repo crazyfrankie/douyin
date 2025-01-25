@@ -2,8 +2,9 @@ package ioc
 
 import (
 	"fmt"
+	"github.com/crazyfrankie/douyin/app/favorite/biz/repository/dao"
 	"os"
-	
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
@@ -27,6 +28,8 @@ func InitDB() *gorm.DB {
 	if err != nil {
 		panic(err)
 	}
+
+	_ = db.AutoMigrate(&dao.Favorite{})
 
 	return db
 }

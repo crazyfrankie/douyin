@@ -3,3 +3,6 @@ server:
   favoirte: "localhost:9091"
   feed: "localhost:9092"
   publish: "localhost:9093"
+  comment: "localhost:9094"
+  relation: "localhost:9095"
+  message: "localhost:9096"

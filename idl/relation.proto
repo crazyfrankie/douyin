@@ -1,0 +1,72 @@
+syntax="proto3";
+
+package relation;
+
+option go_package="/relation";
+
+import "idl/common.proto";
+
+message RelationActionRequest {
+  int64 user_id = 1;
+  int64 to_user_id = 2;
+  int64 action_type = 3;
+}
+
+message RelationActionResponse {}
+
+message RelationFollowListRequest {
+  int64 user_id = 1;
+}
+
+message RelationFollowListResponse {
+  repeated common.User user_list = 1;
+}
+
+message RelationFollowerListRequest {
+  int64 user_id = 1;
+}
+
+message RelationFollowerListResponse {
+  repeated common.User user_list = 1;
+}
+
+message RelationFriendListRequest {
+  int64 user_id = 1;
+}
+
+message RelationFriendListResponse {
+  repeated FriendUser user_list = 1;
+}
+
+message FriendUser {
+  common.User user = 1;
+  string message = 2; // latest chat messages with this friend
+  int64 msgType = 3; // message type，0 - Messages currently requested by the user，1 - Messages sent by the current requesting user
+}
+
+message RelationFollowCountRequest {
+  int64 user_id = 1;
+}
+
+message RelationFollowCountResponse {
+  int64 follow_count = 1;
+  int64 follower_count = 2;
+}
+
+message RelationIsFollowRequest {
+  int64 user_id = 1;
+  int64 to_user_id = 2;
+}
+
+message RelationIsFollowResponse {
+  bool is_follow = 1;
+}
+
+service RelationService {
+  rpc RelationAction(RelationActionRequest) returns (RelationActionResponse);
+  rpc RelationFollowList(RelationFollowListRequest) returns (RelationFollowListResponse);
+  rpc RelationFollowerList(RelationFollowerListRequest) returns (RelationFollowerListResponse);
+  rpc RelationFriendList(RelationFriendListRequest) returns (RelationFriendListResponse);
+  rpc RelationFollowCount(RelationFollowCountRequest) returns (RelationFollowCountResponse);
+  rpc RelationIsFollow(RelationIsFollowRequest) returns (RelationIsFollowResponse);
+}

@@ -81,8 +81,9 @@ func (s *FavoriteService) FavoriteList(ctx context.Context, req *favorite.Favori
 	for _, item := range videosResp.Videos {
 		// Get user info and comment count
 		resp, err := s.feedClient.VideoInfo(ctx, &feed.VideoInfoRequest{
-			VideoId: item.Id,
-			UserId:  uid,
+			VideoId:       item.Id,
+			UserId:        uid,
+			UserIdToQuery: item.Author.Id,
 		})
 		if err != nil {
 			return []*common.Video{}, err

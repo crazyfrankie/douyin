@@ -52,3 +52,14 @@ func (u *UserServer) GetUserInfo(ctx context.Context, req *user.GetUserInfoReque
 		User: res,
 	}, nil
 }
+
+func (u *UserServer) GetUserExists(ctx context.Context, req *user.GetUserExistsRequest) (*user.GetUserExistsResponse, error) {
+	res, err := u.svc.GetUserExists(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user.GetUserExistsResponse{
+		Exists: res,
+	}, nil
+}

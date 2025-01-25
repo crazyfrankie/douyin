@@ -17,14 +17,17 @@ var (
 
 type Config struct {
 	Env    string
-	Server Server `json:"server"`
+	Server Server `yaml:"server"`
 }
 
 type Server struct {
-	User     string `json:"user"`
-	Favorite string `json:"favorite"`
-	Feed     string `json:"feed"`
-	Publish  string `json:"publish"`
+	User     string `yaml:"user"`
+	Favorite string `yaml:"favorite"`
+	Feed     string `yaml:"feed"`
+	Publish  string `yaml:"publish"`
+	Comment  string `yaml:"comment"`
+	Relation string `yaml:"relation"`
+	Message  string `yaml:"message"`
 }
 
 func GetConf() *Config {

@@ -1,0 +1,37 @@
+syntax="proto3";
+
+package message;
+
+option go_package="/message";
+
+message Message {
+  int64 id = 1; // message id
+  int64 to_user_id = 2; // The id of the recipient of the message
+  int64 from_user_id =3; // The id of the sender of the message
+  string content = 4; // Message content
+  int64 create_time = 5; // message creation time
+}
+
+message MessageActionRequest {
+  int64 user_id = 1;
+  int64 to_user_id = 2;
+  string content = 3;
+  int64 action_type = 4;
+}
+
+message MessageActionResponse {}
+
+message MessageChatRequest {
+  int64 user_id = 1;
+  int64 to_user_id = 2;
+  int64 pre_msg_time = 3;
+}
+
+message MessageChatResponse {
+  repeated Message message_list = 1;
+}
+
+service MessageService {
+  rpc MessageAction(MessageActionRequest) returns (MessageActionResponse);
+  rpc MessageChat(MessageChatRequest) returns (MessageChatResponse);
+}

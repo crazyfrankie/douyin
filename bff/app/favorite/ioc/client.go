@@ -7,7 +7,7 @@ import (
 )
 
 func InitClient() favorite.FavoriteServiceClient {
-	conn, err := grpc.NewClient("localhost:50051")
+	conn, err := grpc.NewClient("localhost:50052")
 	if err != nil {
 		panic(err)
 	}

@@ -2,6 +2,7 @@ package ioc
 
 import (
 	"fmt"
+	"github.com/crazyfrankie/douyin/app/feed/biz/repository/dao"
 	"os"
 
 	"gorm.io/driver/mysql"
@@ -27,6 +28,8 @@ func InitDB() *gorm.DB {
 	if err != nil {
 		panic(err)
 	}
+
+	_ = db.AutoMigrate(&dao.Video{})
 
 	return db
 }

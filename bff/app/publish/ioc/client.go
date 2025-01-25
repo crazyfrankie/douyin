@@ -2,12 +2,12 @@ package ioc
 
 import (
 	"google.golang.org/grpc"
-	
+
 	"github.com/crazyfrankie/douyin/rpc_gen/publish"
 )
 
 func InitClient() publish.PublishServiceClient {
-	conn, err := grpc.NewClient("localhost:50051")
+	conn, err := grpc.NewClient("localhost:50054")
 	if err != nil {
 		panic(err)
 	}

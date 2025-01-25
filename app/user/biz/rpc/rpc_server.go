@@ -1,11 +1,11 @@
 package rpc
 
 import (
-	"github.com/crazyfrankie/douyin/app/user/biz/rpc/server"
 	"net"
 
 	"google.golang.org/grpc"
 
+	"github.com/crazyfrankie/douyin/app/user/biz/rpc/server"
 	"github.com/crazyfrankie/douyin/app/user/config"
 )
 

@@ -75,7 +75,7 @@ func (h *Handler) UserInfo() gin.HandlerFunc {
 		claim, _ := claims.(jwt.MapClaims)
 
 		resp, err := h.client.GetUserInfo(c.Request.Context(), &user.GetUserInfoRequest{
-			UserId: claim["user_id"].(int64),
+			UserIdToQuery: claim["user_id"].(int64),
 		})
 		if err != nil {
 			response.Error(c, err)

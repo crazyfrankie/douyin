@@ -83,7 +83,7 @@ func (s *FeedService) VideoList(ctx context.Context, vid []int64) ([]dao.Video, 
 }
 
 func (s *FeedService) VideoInfo(ctx context.Context, req *feed.VideoInfoRequest) (*common.Video, error) {
-	uid, vid := req.GetUserId(), req.GetVideoId()
+	uid, vid, idToQuery := req.GetUserId(), req.GetVideoId(), req.GetUserIdToQuery()
 
 	var wg sync.WaitGroup
 	wg.Add(4)
@@ -93,7 +93,8 @@ func (s *FeedService) VideoInfo(ctx context.Context, req *feed.VideoInfoRequest)
 	// Get user information
 	go func() {
 		resp, err := s.userClient.GetUserInfo(ctx, &user.GetUserInfoRequest{
-			UserId: uid,
+			UserId:        uid,
+			UserIdToQuery: idToQuery,
 		})
 		if err != nil {
 			log.Printf("GetUserInfo func error:" + err.Error())
