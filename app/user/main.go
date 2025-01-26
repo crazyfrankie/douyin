@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/crazyfrankie/douyin/app/user/ioc"
 	"log"
 	"time"
 
@@ -17,7 +18,7 @@ func main() {
 		panic(err)
 	}
 
-	app := InitApp()
+	app := ioc.InitApp()
 
 	err = app.RPCServer.Serve()
 

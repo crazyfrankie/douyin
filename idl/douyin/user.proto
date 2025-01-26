@@ -4,13 +4,31 @@ package user;
 
 option go_package = "/user";
 
-import "idl/common.proto";
+import "idl/douyin/common.proto";
+import "idl/google/api/annotations.proto";
 
 // User service definition
 service UserService {
-  rpc GetUserInfo (GetUserInfoRequest) returns (GetUserInfoResponse);
-  rpc Register (RegisterRequest) returns (RegisterResponse);
-  rpc Login (LoginRequest) returns (LoginResponse);
+  rpc GetUserInfo (GetUserInfoRequest) returns (GetUserInfoResponse) {
+    option (google.api.http) = {
+      get: "/api/user"
+    };
+  }
+
+  rpc Register (RegisterRequest) returns (RegisterResponse) {
+    option (google.api.http) = {
+      post: "/api/user/register"
+      body: "*"
+    };
+  }
+
+  rpc Login (LoginRequest) returns (LoginResponse) {
+    option (google.api.http) = {
+      post: "/api/user/login"
+      body: "*"
+    };
+  }
+
   rpc GetUserExists (GetUserExistsRequest) returns (GetUserExistsResponse);
 }
 
@@ -25,8 +43,8 @@ message GetUserInfoResponse {
 }
 
 message RegisterRequest {
-  string name = 1;
-  string password = 2;
+  string name = 1 [json_name = "name"];
+  string password = 2 [json_name = "password"];
 }
 
 message RegisterResponse {

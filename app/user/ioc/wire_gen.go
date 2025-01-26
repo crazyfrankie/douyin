@@ -4,7 +4,7 @@
 //go:build !wireinject
 // +build !wireinject
 
-package main
+package ioc
 
 import (
 	"github.com/crazyfrankie/douyin/app/user/biz/repository"
@@ -13,21 +13,21 @@ import (
 	"github.com/crazyfrankie/douyin/app/user/biz/rpc/client"
 	"github.com/crazyfrankie/douyin/app/user/biz/rpc/server"
 	"github.com/crazyfrankie/douyin/app/user/biz/service"
-	"github.com/crazyfrankie/douyin/app/user/ioc"
 )
 
 // Injectors from wire.go:
 
-func InitApp() *ioc.App {
-	db := ioc.InitDB()
+func InitApp() *App {
+	db := InitDB()
 	userDao := dao.NewUserDao(db)
 	userRepo := repository.NewUserRepo(userDao)
 	favoriteServiceClient := client.InitFavoriteClient()
 	publishServiceClient := client.InitPublishClient()
-	userService := service.NewUserService(userRepo, favoriteServiceClient, publishServiceClient)
+	relationServiceClient := client.InitRelationClient()
+	userService := service.NewUserService(userRepo, favoriteServiceClient, publishServiceClient, relationServiceClient)
 	userServer := server.NewUserServer(userService)
 	rpcServer := rpc.NewUserRPCServer(userServer)
-	app := &ioc.App{
+	app := &App{
 		RPCServer: rpcServer,
 	}
 	return app

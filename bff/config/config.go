@@ -39,6 +39,7 @@ func initConf() {
 	env := getGoEnv()
 	prefix := "config"
 	filePath := filepath.Join(prefix, filepath.Join(env, "config.yaml"))
+	fmt.Println(filePath)
 	viper.SetConfigFile(filePath)
 
 	if err := viper.ReadInConfig(); err != nil {

@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v5.29.3
-// source: idl/user.proto
+// source: idl/douyin/user.proto
 
 package user
 
@@ -235,5 +235,5 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "idl/user.proto",
+	Metadata: "idl/douyin/user.proto",
 }

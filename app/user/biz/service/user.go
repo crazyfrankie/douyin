@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"github.com/crazyfrankie/douyin/rpc_gen/relation"
 	"sync"
 
 	"golang.org/x/crypto/bcrypt"
@@ -13,6 +12,7 @@ import (
 	"github.com/crazyfrankie/douyin/rpc_gen/common"
 	"github.com/crazyfrankie/douyin/rpc_gen/favorite"
 	"github.com/crazyfrankie/douyin/rpc_gen/publish"
+	"github.com/crazyfrankie/douyin/rpc_gen/relation"
 	"github.com/crazyfrankie/douyin/rpc_gen/user"
 )
 
@@ -180,7 +180,7 @@ func (s *UserService) GetUserInfo(ctx context.Context, req *user.GetUserInfoRequ
 		} else {
 			res.TotalFavorited = favorited.Count
 		}
-		
+
 		wg.Done()
 	}()
 

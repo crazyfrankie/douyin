@@ -1,6 +1,6 @@
 //go:build wireinject
 
-package main
+package ioc
 
 import (
 	"github.com/crazyfrankie/douyin/app/user/biz/repository"
@@ -9,24 +9,24 @@ import (
 	"github.com/crazyfrankie/douyin/app/user/biz/rpc/client"
 	"github.com/crazyfrankie/douyin/app/user/biz/rpc/server"
 	"github.com/crazyfrankie/douyin/app/user/biz/service"
-	"github.com/crazyfrankie/douyin/app/user/ioc"
 	"github.com/google/wire"
 )
 
-func InitApp() *ioc.App {
+func InitApp() *App {
 	wire.Build(
-		ioc.InitDB,
+		InitDB,
 		dao.NewUserDao,
 		repository.NewUserRepo,
 		service.NewUserService,
 
 		client.InitFavoriteClient,
 		client.InitPublishClient,
+		client.InitRelationClient,
 
 		server.NewUserServer,
 		rpc.NewUserRPCServer,
 
-		wire.Struct(new(ioc.App), "*"),
+		wire.Struct(new(App), "*"),
 	)
-	return new(ioc.App)
+	return new(App)
 }

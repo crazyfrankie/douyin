@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 )
 
@@ -26,25 +25,24 @@ func (a *AuthBuild) IgnorePath(path string) *AuthBuild {
 	return a
 }
 
-func (a *AuthBuild) Auth() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		if _, ok := a.paths[c.Request.URL.Path]; ok {
-			c.Next()
+func (a *AuthBuild) Auth(next http.Handler) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if _, ok := a.paths[r.URL.Path]; ok {
+			next.ServeHTTP(w, r)
 			return
 		}
 
-		tokenHeader := c.GetHeader("Authorization")
+		tokenHeader := r.Header.Get("Authorization")
 		token := extractToken(tokenHeader)
 
-		claims, err := parseToken(token)
+		_, err := parseToken(token)
 		if err != nil {
-			c.AbortWithStatus(http.StatusUnauthorized)
+			w.WriteHeader(http.StatusUnauthorized)
+			_, _ = w.Write([]byte("Unauthorized"))
 			return
 		}
 
-		c.Set("claims", claims)
-
-		c.Next()
+		next.ServeHTTP(w, r)
 	}
 }
 
