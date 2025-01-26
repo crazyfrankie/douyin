@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v5.29.3
-// source: idl/publish.proto
+// source: idl/douyin/publish.proto
 
 package publish
 
@@ -193,5 +193,5 @@ var PublishService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "idl/publish.proto",
+	Metadata: "idl/douyin/publish.proto",
 }

@@ -12,12 +12,7 @@ func InitUserClient() user.UserServiceClient {
 	if err != nil {
 		panic(err)
 	}
-	defer func() {
-		err := conn.Close()
-		if err != nil {
-			panic(err)
-		}
-	}()
+
 	return user.NewUserServiceClient(conn)
 }
 
@@ -26,11 +21,6 @@ func InitFavoriteClient() favorite.FavoriteServiceClient {
 	if err != nil {
 		panic(err)
 	}
-	defer func() {
-		err := conn.Close()
-		if err != nil {
-			panic(err)
-		}
-	}()
+
 	return favorite.NewFavoriteServiceClient(conn)
 }

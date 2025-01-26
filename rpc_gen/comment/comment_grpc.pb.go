@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v5.29.3
-// source: idl/comment.proto
+// source: idl/douyin/comment.proto
 
 package comment
 
@@ -155,5 +155,5 @@ var CommentService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "idl/comment.proto",
+	Metadata: "idl/douyin/comment.proto",
 }

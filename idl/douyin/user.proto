@@ -43,8 +43,8 @@ message GetUserInfoResponse {
 }
 
 message RegisterRequest {
-  string name = 1 [json_name = "name"];
-  string password = 2 [json_name = "password"];
+  string name = 1;
+  string password = 2;
 }
 
 message RegisterResponse {

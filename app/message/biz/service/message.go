@@ -17,8 +17,11 @@ func NewMessageService(repo *repository.MessageRepo) *MessageService {
 }
 
 func (s *MessageService) MessageAction(ctx context.Context, req *message.MessageActionRequest) error {
+	userId := ctx.Value("user_id").(float64)
+	uid := int64(userId)
+
 	msg := dao.Message{
-		FromUserId: req.UserId,
+		FromUserId: uid,
 		ToUserId:   req.ToUserId,
 		Content:    req.Content,
 	}
@@ -27,7 +30,9 @@ func (s *MessageService) MessageAction(ctx context.Context, req *message.Message
 }
 
 func (s *MessageService) MessageChat(ctx context.Context, req *message.MessageChatRequest) ([]*message.Message, error) {
-	uid, toUid, preMsgTime := req.GetUserId(), req.GetToUserId(), req.GetPreMsgTime()
+	userId := ctx.Value("user_id").(float64)
+	uid := int64(userId)
+	toUid, preMsgTime := req.GetToUserId(), req.GetPreMsgTime()
 
 	var messages []*message.Message
 	dbMessages, err := s.repo.GetMessageList(ctx, uid, toUid, preMsgTime)

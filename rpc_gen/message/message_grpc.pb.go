@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v5.29.3
-// source: idl/message.proto
+// source: idl/douyin/message.proto
 
 package message
 
@@ -155,5 +155,5 @@ var MessageService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "idl/message.proto",
+	Metadata: "idl/douyin/message.proto",
 }

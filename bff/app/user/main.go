@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"google.golang.org/protobuf/proto"
 	"log"
 	"net/http"
 
@@ -20,8 +21,14 @@ func main() {
 		runtime.WithErrorHandler(func(ctx context.Context, mux *runtime.ServeMux, marshaler runtime.Marshaler, w http.ResponseWriter, r *http.Request, err error) {
 			log.Printf("gRPC-Gateway error: %v", err)
 			runtime.DefaultHTTPErrorHandler(ctx, mux, marshaler, w, r, err)
+		}),
+		runtime.WithForwardResponseOption(func(ctx context.Context, w http.ResponseWriter, resp proto.Message) error {
+			if r, ok := resp.(*user.RegisterResponse); ok {
+				w.Header().Set("x-jwt-token", r.Token)
+			}
+			return nil
 		}))
-	client := InitClient()
+	client := initClient()
 
 	err := user.RegisterUserServiceHandlerClient(context.Background(), mux, client)
 	if err != nil {
@@ -38,7 +45,7 @@ func main() {
 	}
 }
 
-func InitClient() user.UserServiceClient {
+func initClient() user.UserServiceClient {
 	conn, err := grpc.NewClient("localhost:50051",
 		grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {

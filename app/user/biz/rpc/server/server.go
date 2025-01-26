@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"github.com/crazyfrankie/douyin/app/user/biz/service"
 	"github.com/crazyfrankie/douyin/rpc_gen/user"
 	"google.golang.org/grpc"
@@ -36,7 +37,7 @@ func (u *UserServer) Login(ctx context.Context, req *user.LoginRequest) (*user.L
 	if err != nil {
 		return nil, err
 	}
-
+	fmt.Println(token)
 	return &user.LoginResponse{
 		Token: token,
 	}, nil

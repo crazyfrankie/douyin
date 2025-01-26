@@ -33,6 +33,9 @@ func NewPublishService(repo *repository.PublishRepo, favoClient favorite.Favorit
 }
 
 func (s *PublishService) PublishAction(ctx context.Context, req *publish.PublishActionRequest) error {
+	userId := ctx.Value("user_id").(float64)
+	uid := int64(userId)
+
 	var fileHeader multipart.FileHeader
 	err := json.Unmarshal(req.Data, &fileHeader)
 	if err != nil {
@@ -40,7 +43,7 @@ func (s *PublishService) PublishAction(ctx context.Context, req *publish.Publish
 	}
 
 	now := time.Now().Unix()
-	fileName := fmt.Sprintf("%d.%d", req.GetUserId(), now)
+	fileName := fmt.Sprintf("%d.%d", uid, now)
 	fileHeader.Filename = fileName + path.Ext(fileHeader.Filename)
 
 	uploadInfo, err := mw.PutToBucket(ctx, constants.MinioVideoBucketName, &fileHeader)
@@ -61,7 +64,7 @@ func (s *PublishService) PublishAction(ctx context.Context, req *publish.Publish
 	}
 
 	video := &dao.Video{
-		AuthorID: req.GetUserId(),
+		AuthorID: uid,
 		Title:    req.GetTitle(),
 		PlayURL:  playUrl,
 		CoverURL: constants.MinioImgBucketName + "/" + fileName + ".png",
@@ -72,7 +75,9 @@ func (s *PublishService) PublishAction(ctx context.Context, req *publish.Publish
 	return s.repo.AddVideo(ctx, video)
 }
 
-func (s *PublishService) PublishList(ctx context.Context, uid int64) ([]*common.Video, error) {
+func (s *PublishService) PublishList(ctx context.Context, req *publish.PublishListRequest) ([]*common.Video, error) {
+	userId := ctx.Value("user_id").(float64)
+	uid := int64(userId)
 	videoIds, err := s.repo.GetPublishVideos(ctx, uid)
 	if err != nil {
 		return nil, err

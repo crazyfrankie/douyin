@@ -2,12 +2,13 @@
 // versions:
 // 	protoc-gen-go v1.36.3
 // 	protoc        v5.29.3
-// source: idl/feed.proto
+// source: idl/douyin/feed.proto
 
 package feed
 
 import (
 	common "github.com/crazyfrankie/douyin/rpc_gen/common"
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -30,7 +31,7 @@ type FeedRequest struct {
 
 func (x *FeedRequest) Reset() {
 	*x = FeedRequest{}
-	mi := &file_idl_feed_proto_msgTypes[0]
+	mi := &file_idl_douyin_feed_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -42,7 +43,7 @@ func (x *FeedRequest) String() string {
 func (*FeedRequest) ProtoMessage() {}
 
 func (x *FeedRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_idl_feed_proto_msgTypes[0]
+	mi := &file_idl_douyin_feed_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -55,7 +56,7 @@ func (x *FeedRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FeedRequest.ProtoReflect.Descriptor instead.
 func (*FeedRequest) Descriptor() ([]byte, []int) {
-	return file_idl_feed_proto_rawDescGZIP(), []int{0}
+	return file_idl_douyin_feed_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *FeedRequest) GetLatestTime() int64 {
@@ -75,7 +76,7 @@ type FeedResponse struct {
 
 func (x *FeedResponse) Reset() {
 	*x = FeedResponse{}
-	mi := &file_idl_feed_proto_msgTypes[1]
+	mi := &file_idl_douyin_feed_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -87,7 +88,7 @@ func (x *FeedResponse) String() string {
 func (*FeedResponse) ProtoMessage() {}
 
 func (x *FeedResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_idl_feed_proto_msgTypes[1]
+	mi := &file_idl_douyin_feed_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -100,7 +101,7 @@ func (x *FeedResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FeedResponse.ProtoReflect.Descriptor instead.
 func (*FeedResponse) Descriptor() ([]byte, []int) {
-	return file_idl_feed_proto_rawDescGZIP(), []int{1}
+	return file_idl_douyin_feed_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *FeedResponse) GetVideos() []*common.Video {
@@ -126,7 +127,7 @@ type VideoListRequest struct {
 
 func (x *VideoListRequest) Reset() {
 	*x = VideoListRequest{}
-	mi := &file_idl_feed_proto_msgTypes[2]
+	mi := &file_idl_douyin_feed_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -138,7 +139,7 @@ func (x *VideoListRequest) String() string {
 func (*VideoListRequest) ProtoMessage() {}
 
 func (x *VideoListRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_idl_feed_proto_msgTypes[2]
+	mi := &file_idl_douyin_feed_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -151,7 +152,7 @@ func (x *VideoListRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VideoListRequest.ProtoReflect.Descriptor instead.
 func (*VideoListRequest) Descriptor() ([]byte, []int) {
-	return file_idl_feed_proto_rawDescGZIP(), []int{2}
+	return file_idl_douyin_feed_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *VideoListRequest) GetVideoIds() []int64 {
@@ -170,7 +171,7 @@ type VideoListResponse struct {
 
 func (x *VideoListResponse) Reset() {
 	*x = VideoListResponse{}
-	mi := &file_idl_feed_proto_msgTypes[3]
+	mi := &file_idl_douyin_feed_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -182,7 +183,7 @@ func (x *VideoListResponse) String() string {
 func (*VideoListResponse) ProtoMessage() {}
 
 func (x *VideoListResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_idl_feed_proto_msgTypes[3]
+	mi := &file_idl_douyin_feed_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -195,7 +196,7 @@ func (x *VideoListResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VideoListResponse.ProtoReflect.Descriptor instead.
 func (*VideoListResponse) Descriptor() ([]byte, []int) {
-	return file_idl_feed_proto_rawDescGZIP(), []int{3}
+	return file_idl_douyin_feed_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *VideoListResponse) GetVideos() []*common.Video {
@@ -216,7 +217,7 @@ type VideoInfoRequest struct {
 
 func (x *VideoInfoRequest) Reset() {
 	*x = VideoInfoRequest{}
-	mi := &file_idl_feed_proto_msgTypes[4]
+	mi := &file_idl_douyin_feed_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -228,7 +229,7 @@ func (x *VideoInfoRequest) String() string {
 func (*VideoInfoRequest) ProtoMessage() {}
 
 func (x *VideoInfoRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_idl_feed_proto_msgTypes[4]
+	mi := &file_idl_douyin_feed_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -241,7 +242,7 @@ func (x *VideoInfoRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VideoInfoRequest.ProtoReflect.Descriptor instead.
 func (*VideoInfoRequest) Descriptor() ([]byte, []int) {
-	return file_idl_feed_proto_rawDescGZIP(), []int{4}
+	return file_idl_douyin_feed_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *VideoInfoRequest) GetUserId() int64 {
@@ -274,7 +275,7 @@ type VideoInfoResponse struct {
 
 func (x *VideoInfoResponse) Reset() {
 	*x = VideoInfoResponse{}
-	mi := &file_idl_feed_proto_msgTypes[5]
+	mi := &file_idl_douyin_feed_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -286,7 +287,7 @@ func (x *VideoInfoResponse) String() string {
 func (*VideoInfoResponse) ProtoMessage() {}
 
 func (x *VideoInfoResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_idl_feed_proto_msgTypes[5]
+	mi := &file_idl_douyin_feed_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -299,7 +300,7 @@ func (x *VideoInfoResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VideoInfoResponse.ProtoReflect.Descriptor instead.
 func (*VideoInfoResponse) Descriptor() ([]byte, []int) {
-	return file_idl_feed_proto_rawDescGZIP(), []int{5}
+	return file_idl_douyin_feed_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *VideoInfoResponse) GetVideo() *common.Video {
@@ -318,7 +319,7 @@ type VideoExistsRequest struct {
 
 func (x *VideoExistsRequest) Reset() {
 	*x = VideoExistsRequest{}
-	mi := &file_idl_feed_proto_msgTypes[6]
+	mi := &file_idl_douyin_feed_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -330,7 +331,7 @@ func (x *VideoExistsRequest) String() string {
 func (*VideoExistsRequest) ProtoMessage() {}
 
 func (x *VideoExistsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_idl_feed_proto_msgTypes[6]
+	mi := &file_idl_douyin_feed_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -343,7 +344,7 @@ func (x *VideoExistsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VideoExistsRequest.ProtoReflect.Descriptor instead.
 func (*VideoExistsRequest) Descriptor() ([]byte, []int) {
-	return file_idl_feed_proto_rawDescGZIP(), []int{6}
+	return file_idl_douyin_feed_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *VideoExistsRequest) GetVideoId() int64 {
@@ -362,7 +363,7 @@ type VideoExistsResponse struct {
 
 func (x *VideoExistsResponse) Reset() {
 	*x = VideoExistsResponse{}
-	mi := &file_idl_feed_proto_msgTypes[7]
+	mi := &file_idl_douyin_feed_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -374,7 +375,7 @@ func (x *VideoExistsResponse) String() string {
 func (*VideoExistsResponse) ProtoMessage() {}
 
 func (x *VideoExistsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_idl_feed_proto_msgTypes[7]
+	mi := &file_idl_douyin_feed_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -387,7 +388,7 @@ func (x *VideoExistsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VideoExistsResponse.ProtoReflect.Descriptor instead.
 func (*VideoExistsResponse) Descriptor() ([]byte, []int) {
-	return file_idl_feed_proto_rawDescGZIP(), []int{7}
+	return file_idl_douyin_feed_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *VideoExistsResponse) GetExists() bool {
@@ -397,12 +398,15 @@ func (x *VideoExistsResponse) GetExists() bool {
 	return false
 }
 
-var File_idl_feed_proto protoreflect.FileDescriptor
+var File_idl_douyin_feed_proto protoreflect.FileDescriptor
 
-var file_idl_feed_proto_rawDesc = []byte{
-	0x0a, 0x0e, 0x69, 0x64, 0x6c, 0x2f, 0x66, 0x65, 0x65, 0x64, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x12, 0x04, 0x66, 0x65, 0x65, 0x64, 0x1a, 0x10, 0x69, 0x64, 0x6c, 0x2f, 0x63, 0x6f, 0x6d, 0x6d,
-	0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x2e, 0x0a, 0x0b, 0x46, 0x65, 0x65, 0x64,
+var file_idl_douyin_feed_proto_rawDesc = []byte{
+	0x0a, 0x15, 0x69, 0x64, 0x6c, 0x2f, 0x64, 0x6f, 0x75, 0x79, 0x69, 0x6e, 0x2f, 0x66, 0x65, 0x65,
+	0x64, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x04, 0x66, 0x65, 0x65, 0x64, 0x1a, 0x17, 0x69,
+	0x64, 0x6c, 0x2f, 0x64, 0x6f, 0x75, 0x79, 0x69, 0x6e, 0x2f, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e,
+	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x20, 0x69, 0x64, 0x6c, 0x2f, 0x67, 0x6f, 0x6f, 0x67,
+	0x6c, 0x65, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x61, 0x6e, 0x6e, 0x6f, 0x74, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x2e, 0x0a, 0x0b, 0x46, 0x65, 0x65, 0x64,
 	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1f, 0x0a, 0x0b, 0x6c, 0x61, 0x74, 0x65, 0x73,
 	0x74, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0a, 0x6c, 0x61,
 	0x74, 0x65, 0x73, 0x74, 0x54, 0x69, 0x6d, 0x65, 0x22, 0x52, 0x0a, 0x0c, 0x46, 0x65, 0x65, 0x64,
@@ -434,40 +438,41 @@ var file_idl_feed_proto_rawDesc = []byte{
 	0x64, 0x65, 0x6f, 0x49, 0x64, 0x22, 0x2d, 0x0a, 0x13, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x45, 0x78,
 	0x69, 0x73, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a, 0x06,
 	0x65, 0x78, 0x69, 0x73, 0x74, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x06, 0x65, 0x78,
-	0x69, 0x73, 0x74, 0x73, 0x32, 0xfc, 0x01, 0x0a, 0x0b, 0x46, 0x65, 0x65, 0x64, 0x53, 0x65, 0x72,
-	0x76, 0x69, 0x63, 0x65, 0x12, 0x2d, 0x0a, 0x04, 0x46, 0x65, 0x65, 0x64, 0x12, 0x11, 0x2e, 0x66,
+	0x69, 0x73, 0x74, 0x73, 0x32, 0x8f, 0x02, 0x0a, 0x0b, 0x46, 0x65, 0x65, 0x64, 0x53, 0x65, 0x72,
+	0x76, 0x69, 0x63, 0x65, 0x12, 0x40, 0x0a, 0x04, 0x46, 0x65, 0x65, 0x64, 0x12, 0x11, 0x2e, 0x66,
 	0x65, 0x65, 0x64, 0x2e, 0x46, 0x65, 0x65, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
 	0x12, 0x2e, 0x66, 0x65, 0x65, 0x64, 0x2e, 0x46, 0x65, 0x65, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x12, 0x3c, 0x0a, 0x09, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x4c, 0x69, 0x73, 0x74,
-	0x12, 0x16, 0x2e, 0x66, 0x65, 0x65, 0x64, 0x2e, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x4c, 0x69, 0x73,
-	0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x17, 0x2e, 0x66, 0x65, 0x65, 0x64, 0x2e,
-	0x56, 0x69, 0x64, 0x65, 0x6f, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x12, 0x3c, 0x0a, 0x09, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x16,
-	0x2e, 0x66, 0x65, 0x65, 0x64, 0x2e, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x49, 0x6e, 0x66, 0x6f, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x17, 0x2e, 0x66, 0x65, 0x65, 0x64, 0x2e, 0x56, 0x69,
-	0x64, 0x65, 0x6f, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
-	0x42, 0x0a, 0x0b, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x45, 0x78, 0x69, 0x73, 0x74, 0x73, 0x12, 0x18,
-	0x2e, 0x66, 0x65, 0x65, 0x64, 0x2e, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x45, 0x78, 0x69, 0x73, 0x74,
-	0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x66, 0x65, 0x65, 0x64, 0x2e,
-	0x56, 0x69, 0x64, 0x65, 0x6f, 0x45, 0x78, 0x69, 0x73, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x42, 0x07, 0x5a, 0x05, 0x2f, 0x66, 0x65, 0x65, 0x64, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x6e, 0x73, 0x65, 0x22, 0x11, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x0b, 0x12, 0x09, 0x2f, 0x61, 0x70,
+	0x69, 0x2f, 0x66, 0x65, 0x65, 0x64, 0x12, 0x3c, 0x0a, 0x09, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x4c,
+	0x69, 0x73, 0x74, 0x12, 0x16, 0x2e, 0x66, 0x65, 0x65, 0x64, 0x2e, 0x56, 0x69, 0x64, 0x65, 0x6f,
+	0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x17, 0x2e, 0x66, 0x65,
+	0x65, 0x64, 0x2e, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3c, 0x0a, 0x09, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x49, 0x6e, 0x66,
+	0x6f, 0x12, 0x16, 0x2e, 0x66, 0x65, 0x65, 0x64, 0x2e, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x49, 0x6e,
+	0x66, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x17, 0x2e, 0x66, 0x65, 0x65, 0x64,
+	0x2e, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x42, 0x0a, 0x0b, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x45, 0x78, 0x69, 0x73, 0x74,
+	0x73, 0x12, 0x18, 0x2e, 0x66, 0x65, 0x65, 0x64, 0x2e, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x45, 0x78,
+	0x69, 0x73, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x19, 0x2e, 0x66, 0x65,
+	0x65, 0x64, 0x2e, 0x56, 0x69, 0x64, 0x65, 0x6f, 0x45, 0x78, 0x69, 0x73, 0x74, 0x73, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x07, 0x5a, 0x05, 0x2f, 0x66, 0x65, 0x65, 0x64, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
-	file_idl_feed_proto_rawDescOnce sync.Once
-	file_idl_feed_proto_rawDescData = file_idl_feed_proto_rawDesc
+	file_idl_douyin_feed_proto_rawDescOnce sync.Once
+	file_idl_douyin_feed_proto_rawDescData = file_idl_douyin_feed_proto_rawDesc
 )
 
-func file_idl_feed_proto_rawDescGZIP() []byte {
-	file_idl_feed_proto_rawDescOnce.Do(func() {
-		file_idl_feed_proto_rawDescData = protoimpl.X.CompressGZIP(file_idl_feed_proto_rawDescData)
+func file_idl_douyin_feed_proto_rawDescGZIP() []byte {
+	file_idl_douyin_feed_proto_rawDescOnce.Do(func() {
+		file_idl_douyin_feed_proto_rawDescData = protoimpl.X.CompressGZIP(file_idl_douyin_feed_proto_rawDescData)
 	})
-	return file_idl_feed_proto_rawDescData
+	return file_idl_douyin_feed_proto_rawDescData
 }
 
-var file_idl_feed_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
-var file_idl_feed_proto_goTypes = []any{
+var file_idl_douyin_feed_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_idl_douyin_feed_proto_goTypes = []any{
 	(*FeedRequest)(nil),         // 0: feed.FeedRequest
 	(*FeedResponse)(nil),        // 1: feed.FeedResponse
 	(*VideoListRequest)(nil),    // 2: feed.VideoListRequest
@@ -478,7 +483,7 @@ var file_idl_feed_proto_goTypes = []any{
 	(*VideoExistsResponse)(nil), // 7: feed.VideoExistsResponse
 	(*common.Video)(nil),        // 8: common.Video
 }
-var file_idl_feed_proto_depIdxs = []int32{
+var file_idl_douyin_feed_proto_depIdxs = []int32{
 	8, // 0: feed.FeedResponse.videos:type_name -> common.Video
 	8, // 1: feed.VideoListResponse.videos:type_name -> common.Video
 	8, // 2: feed.VideoInfoResponse.video:type_name -> common.Video
@@ -497,27 +502,27 @@ var file_idl_feed_proto_depIdxs = []int32{
 	0, // [0:3] is the sub-list for field type_name
 }
 
-func init() { file_idl_feed_proto_init() }
-func file_idl_feed_proto_init() {
-	if File_idl_feed_proto != nil {
+func init() { file_idl_douyin_feed_proto_init() }
+func file_idl_douyin_feed_proto_init() {
+	if File_idl_douyin_feed_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_idl_feed_proto_rawDesc,
+			RawDescriptor: file_idl_douyin_feed_proto_rawDesc,
 			NumEnums:      0,
 			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_idl_feed_proto_goTypes,
-		DependencyIndexes: file_idl_feed_proto_depIdxs,
-		MessageInfos:      file_idl_feed_proto_msgTypes,
+		GoTypes:           file_idl_douyin_feed_proto_goTypes,
+		DependencyIndexes: file_idl_douyin_feed_proto_depIdxs,
+		MessageInfos:      file_idl_douyin_feed_proto_msgTypes,
 	}.Build()
-	File_idl_feed_proto = out.File
-	file_idl_feed_proto_rawDesc = nil
-	file_idl_feed_proto_goTypes = nil
-	file_idl_feed_proto_depIdxs = nil
+	File_idl_douyin_feed_proto = out.File
+	file_idl_douyin_feed_proto_rawDesc = nil
+	file_idl_douyin_feed_proto_goTypes = nil
+	file_idl_douyin_feed_proto_depIdxs = nil
 }

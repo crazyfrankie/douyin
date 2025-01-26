@@ -6,6 +6,7 @@ replace github.com/crazyfrankie/douyin/rpc_gen => ../../rpc_gen
 
 require (
 	github.com/crazyfrankie/douyin/rpc_gen v0.0.0-00010101000000-000000000000
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/wire v0.6.0
 	github.com/joho/godotenv v1.5.1
 	github.com/spf13/viper v1.19.0
@@ -22,6 +23,7 @@ require (
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.26.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect

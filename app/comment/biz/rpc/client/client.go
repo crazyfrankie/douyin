@@ -2,7 +2,7 @@ package client
 
 import (
 	"google.golang.org/grpc"
-	
+
 	"github.com/crazyfrankie/douyin/rpc_gen/user"
 )
 
@@ -11,11 +11,6 @@ func InitUserClient() user.UserServiceClient {
 	if err != nil {
 		panic(err)
 	}
-	defer func() {
-		err := conn.Close()
-		if err != nil {
-			panic(err)
-		}
-	}()
+
 	return user.NewUserServiceClient(conn)
 }

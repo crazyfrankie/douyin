@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v5.29.3
-// source: idl/feed.proto
+// source: idl/douyin/feed.proto
 
 package feed
 
@@ -231,5 +231,5 @@ var FeedService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "idl/feed.proto",
+	Metadata: "idl/douyin/feed.proto",
 }

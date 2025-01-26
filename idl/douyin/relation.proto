@@ -4,10 +4,12 @@ package relation;
 
 option go_package="/relation";
 
-import "idl/common.proto";
+import "idl/douyin/common.proto";
+import "idl/google/api/annotations.proto";
+
 
 message RelationActionRequest {
-  int64 user_id = 1;
+  string token = 1;
   int64 to_user_id = 2;
   int64 action_type = 3;
 }
@@ -15,7 +17,7 @@ message RelationActionRequest {
 message RelationActionResponse {}
 
 message RelationFollowListRequest {
-  int64 user_id = 1;
+  string token = 1;
 }
 
 message RelationFollowListResponse {
@@ -23,7 +25,7 @@ message RelationFollowListResponse {
 }
 
 message RelationFollowerListRequest {
-  int64 user_id = 1;
+  string token = 1;
 }
 
 message RelationFollowerListResponse {
@@ -31,7 +33,7 @@ message RelationFollowerListResponse {
 }
 
 message RelationFriendListRequest {
-  int64 user_id = 1;
+  string token = 1;
 }
 
 message RelationFriendListResponse {
@@ -63,10 +65,27 @@ message RelationIsFollowResponse {
 }
 
 service RelationService {
-  rpc RelationAction(RelationActionRequest) returns (RelationActionResponse);
-  rpc RelationFollowList(RelationFollowListRequest) returns (RelationFollowListResponse);
-  rpc RelationFollowerList(RelationFollowerListRequest) returns (RelationFollowerListResponse);
-  rpc RelationFriendList(RelationFriendListRequest) returns (RelationFriendListResponse);
+  rpc RelationAction(RelationActionRequest) returns (RelationActionResponse) {
+    option (google.api.http) = {
+      post: "/api/relation/action"
+      body: "*"
+    };
+  }
+  rpc RelationFollowList(RelationFollowListRequest) returns (RelationFollowListResponse) {
+    option (google.api.http) = {
+      get: "/api/relation/follow/list"
+    };
+  }
+  rpc RelationFollowerList(RelationFollowerListRequest) returns (RelationFollowerListResponse) {
+    option (google.api.http) = {
+      get: "/api/relation/follower/list"
+    };
+  }
+  rpc RelationFriendList(RelationFriendListRequest) returns (RelationFriendListResponse) {
+    option (google.api.http) = {
+      get: "/api/relation/friend/list"
+    };
+  }
   rpc RelationFollowCount(RelationFollowCountRequest) returns (RelationFollowCountResponse);
   rpc RelationIsFollow(RelationIsFollowRequest) returns (RelationIsFollowResponse);
 }

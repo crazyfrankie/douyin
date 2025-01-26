@@ -10,11 +10,6 @@ func InitFavoriteClient() favorite.FavoriteServiceClient {
 	if err != nil {
 		panic(err)
 	}
-	defer func(conn *grpc.ClientConn) {
-		err := conn.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(conn)
+
 	return favorite.NewFavoriteServiceClient(conn)
 }

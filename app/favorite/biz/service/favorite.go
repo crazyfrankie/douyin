@@ -23,7 +23,9 @@ func NewFavoriteService(repo *repository.FavoriteRepo, feedClient feed.FeedServi
 
 // FavoriteAction adds or deletes a like relationship between the current user and the current video.
 func (s *FavoriteService) FavoriteAction(ctx context.Context, req *favorite.FavoriteActionRequest) error {
-	vid, uid := req.GetVideoId(), req.GetUserId()
+	userId := ctx.Value("user_id").(float64)
+	uid := int64(userId)
+	vid := req.GetVideoId()
 
 	// 查询视频是否存在
 	_, err := s.feedClient.VideoExists(ctx, &feed.VideoExistsRequest{
@@ -63,7 +65,8 @@ func (s *FavoriteService) FavoriteAction(ctx context.Context, req *favorite.Favo
 
 // FavoriteList returns the list of videos liked by the current user.
 func (s *FavoriteService) FavoriteList(ctx context.Context, req *favorite.FavoriteListRequest) ([]*common.Video, error) {
-	uid := req.GetUserId()
+	userId := ctx.Value("user_id").(float64)
+	uid := int64(userId)
 
 	favorsID, err := s.repo.GetFavoriteVideosByID(ctx, uid)
 	if err != nil {

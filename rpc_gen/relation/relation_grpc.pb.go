@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v5.29.3
-// source: idl/relation.proto
+// source: idl/douyin/relation.proto
 
 package relation
 
@@ -307,5 +307,5 @@ var RelationService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "idl/relation.proto",
+	Metadata: "idl/douyin/relation.proto",
 }

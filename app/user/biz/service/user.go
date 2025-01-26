@@ -38,7 +38,7 @@ func (s *UserService) Register(ctx context.Context, req *user.RegisterRequest) (
 	}
 
 	u := dao.User{
-		Name:     req.Name,
+		Name:     req.GetName(),
 		Password: string(password),
 		Avatar:   defaultAvatar,
 	}

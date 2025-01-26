@@ -21,18 +21,19 @@ func NewRelationService(repo *repository.RelationRepo, userClient user.UserServi
 }
 
 func (s *RelationService) FollowAction(ctx context.Context, req *relation.RelationActionRequest) error {
+	uid := ctx.Value("user_id").(float64)
 	_, err := s.userClient.GetUserExists(ctx, &user.GetUserExistsRequest{
-		UserId: req.UserId,
+		UserId: int64(uid),
 	})
 	if err != nil {
 		return err
 	}
 
 	follow := dao.Relation{
-		UserId:   req.GetUserId(),
+		UserId:   int64(uid),
 		ToUserId: req.GetToUserId(),
 	}
-	exists, _ := s.repo.GetFollowExists(ctx, req.GetUserId(), req.GetToUserId())
+	exists, _ := s.repo.GetFollowExists(ctx, int64(uid), req.GetToUserId())
 	if req.GetActionType() == 1 {
 		if exists {
 			return errno.FollowRelationAlreadyExistErr
@@ -49,15 +50,17 @@ func (s *RelationService) FollowAction(ctx context.Context, req *relation.Relati
 }
 
 func (s *RelationService) FollowList(ctx context.Context, req *relation.RelationFollowListRequest) ([]*common.User, error) {
+	userId := ctx.Value("user_id").(float64)
+	uid := int64(userId)
 	_, err := s.userClient.GetUserExists(ctx, &user.GetUserExistsRequest{
-		UserId: req.GetUserId(),
+		UserId: uid,
 	})
 	if err != nil {
 		return nil, err
 	}
 
 	var follows []*common.User
-	dbFollows, err := s.repo.GetFollowList(ctx, req.GetUserId())
+	dbFollows, err := s.repo.GetFollowList(ctx, uid)
 	if err != nil {
 		return follows, err
 	}
@@ -65,7 +68,7 @@ func (s *RelationService) FollowList(ctx context.Context, req *relation.Relation
 	for _, f := range dbFollows {
 		resp, err := s.userClient.GetUserInfo(ctx, &user.GetUserInfoRequest{
 			UserIdToQuery: f.ToUserId,
-			UserId:        req.GetUserId(),
+			UserId:        uid,
 		})
 		if err != nil {
 			continue
@@ -77,15 +80,17 @@ func (s *RelationService) FollowList(ctx context.Context, req *relation.Relation
 }
 
 func (s *RelationService) FollowerList(ctx context.Context, req *relation.RelationFollowerListRequest) ([]*common.User, error) {
+	userId := ctx.Value("user_id").(float64)
+	uid := int64(userId)
 	_, err := s.userClient.GetUserExists(ctx, &user.GetUserExistsRequest{
-		UserId: req.GetUserId(),
+		UserId: uid,
 	})
 	if err != nil {
 		return nil, err
 	}
 
 	var followers []*common.User
-	dbFollowers, err := s.repo.GetFollowerList(ctx, req.GetUserId())
+	dbFollowers, err := s.repo.GetFollowerList(ctx, uid)
 	if err != nil {
 		return followers, err
 	}
@@ -93,7 +98,7 @@ func (s *RelationService) FollowerList(ctx context.Context, req *relation.Relati
 	for _, f := range dbFollowers {
 		resp, err := s.userClient.GetUserInfo(ctx, &user.GetUserInfoRequest{
 			UserIdToQuery: f.UserId,
-			UserId:        req.GetUserId(),
+			UserId:        uid,
 		})
 		if err != nil {
 			continue
@@ -105,20 +110,22 @@ func (s *RelationService) FollowerList(ctx context.Context, req *relation.Relati
 }
 
 func (s *RelationService) FriendList(ctx context.Context, req *relation.RelationFriendListRequest) ([]*relation.FriendUser, error) {
+	userId := ctx.Value("user_id").(float64)
+	uid := int64(userId)
 	_, err := s.userClient.GetUserExists(ctx, &user.GetUserExistsRequest{
-		UserId: req.GetUserId(),
+		UserId: uid,
 	})
 	if err != nil {
 		return nil, err
 	}
 
 	var friends []*relation.FriendUser
-	dbFriends, err := s.repo.GetFriendList(ctx, req.GetUserId())
+	dbFriends, err := s.repo.GetFriendList(ctx, uid)
 
 	for _, f := range dbFriends {
 		resp, err := s.userClient.GetUserInfo(ctx, &user.GetUserInfoRequest{
 			UserIdToQuery: f,
-			UserId:        req.GetUserId(),
+			UserId:        uid,
 		})
 		if err != nil {
 			continue

@@ -2,46 +2,41 @@ package main
 
 import (
 	"context"
-	"errors"
+	"fmt"
+	"github.com/crazyfrankie/douyin/bff/config"
+	"github.com/crazyfrankie/douyin/bff/mw"
+	"github.com/crazyfrankie/douyin/rpc_gen/relation"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
-	"time"
-
-	"github.com/crazyfrankie/douyin/bff/app/relation/ioc"
-	"github.com/crazyfrankie/douyin/bff/config"
 )
 
 func main() {
-	engine := ioc.InitGin()
+	mux := runtime.NewServeMux()
 
-	server := &http.Server{
-		Addr:    config.GetConf().Server.Relation,
-		Handler: engine,
+	client := initClient()
+
+	err := relation.RegisterRelationServiceHandlerClient(context.Background(), mux, client)
+	if err != nil {
+		panic(err)
 	}
 
-	go func() {
-		if err := server.ListenAndServe(); err != nil && errors.Is(err, http.ErrServerClosed) {
-			log.Fatalf("listen: %s\n", err)
-		}
-	}()
-	log.Printf("Server is running at http://%s", config.GetConf().Server.Relation)
+	handler := mw.NewAuthBuilder().Auth(mux)
 
-	quit := make(chan os.Signal, 1)
+	log.Printf("HTTP server listening on %s", config.GetConf().Server.Relation)
+	if err := http.ListenAndServe(fmt.Sprintf("%s", config.GetConf().Server.Relation), handler); err != nil {
+		log.Fatalf("Failed to serve: %v", err)
+	}
+}
 
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-
-	<-quit
-	log.Print("shutting down server")
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
-	if err := server.Shutdown(ctx); err != nil {
-		log.Fatalf("Server forced shutting down: %s", err)
+func initClient() relation.RelationServiceClient {
+	conn, err := grpc.NewClient("localhost:50056",
+		grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		panic(err)
 	}
 
-	log.Printf("Server exited gracefully")
+	return relation.NewRelationServiceClient(conn)
 }

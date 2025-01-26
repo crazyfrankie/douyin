@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v5.29.3
-// source: idl/favorite.proto
+// source: idl/douyin/favorite.proto
 
 package favorite
 
@@ -307,5 +307,5 @@ var FavoriteService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "idl/favorite.proto",
+	Metadata: "idl/douyin/favorite.proto",
 }

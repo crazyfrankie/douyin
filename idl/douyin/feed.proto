@@ -4,7 +4,8 @@ package feed;
 
 option go_package = "/feed";
 
-import "idl/common.proto";
+import "idl/douyin/common.proto";
+import "idl/google/api/annotations.proto";
 
 message FeedRequest {
   int64 latest_time = 1;
@@ -42,7 +43,11 @@ message VideoExistsResponse {
 }
 
 service FeedService {
-  rpc Feed(FeedRequest) returns (FeedResponse);
+  rpc Feed(FeedRequest) returns (FeedResponse) {
+    option (google.api.http) = {
+      get: "/api/feed"
+    };
+  }
   rpc VideoList(VideoListRequest) returns (VideoListResponse);
   rpc VideoInfo(VideoInfoRequest) returns (VideoInfoResponse);
   rpc VideoExists(VideoExistsRequest) returns (VideoExistsResponse);

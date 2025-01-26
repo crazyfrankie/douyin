@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"github.com/crazyfrankie/douyin/app/comment/mw"
 
 	"google.golang.org/grpc"
 
@@ -33,7 +34,13 @@ func (s *CommentServer) CommentAction(ctx context.Context, request *comment.Comm
 }
 
 func (s *CommentServer) CommentList(ctx context.Context, request *comment.CommentListRequest) (*comment.CommentListResponse, error) {
-	resp, err := s.svc.CommentList(ctx, request)
+	claims, err := mw.ParseToken(request.GetToken())
+	if err != nil {
+		return nil, err
+	}
+
+	newCtx := context.WithValue(ctx, "user_id", claims["user_id"])
+	resp, err := s.svc.CommentList(newCtx, request)
 	if err != nil {
 		return nil, err
 	}

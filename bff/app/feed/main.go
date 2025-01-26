@@ -2,46 +2,43 @@ package main
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"log"
 	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
-	"time"
 
-	"github.com/crazyfrankie/douyin/bff/app/feed/ioc"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+
 	"github.com/crazyfrankie/douyin/bff/config"
+	"github.com/crazyfrankie/douyin/bff/mw"
+	"github.com/crazyfrankie/douyin/rpc_gen/feed"
 )
 
 func main() {
-	engine := ioc.InitGin()
+	mux := runtime.NewServeMux()
 
-	server := &http.Server{
-		Addr:    config.GetConf().Server.Feed,
-		Handler: engine,
+	client := initClient()
+
+	err := feed.RegisterFeedServiceHandlerClient(context.Background(), mux, client)
+	if err != nil {
+		panic(err)
 	}
 
-	go func() {
-		if err := server.ListenAndServe(); err != nil && errors.Is(err, http.ErrServerClosed) {
-			log.Fatalf("listen: %s\n", err)
-		}
-	}()
-	log.Printf("Server is running at http://%s", config.GetConf().Server.Feed)
+	handler := mw.NewAuthBuilder().Auth(mux)
 
-	quit := make(chan os.Signal, 1)
+	log.Printf("HTTP server listening on %s", config.GetConf().Server.Feed)
+	if err := http.ListenAndServe(fmt.Sprintf("%s", config.GetConf().Server.Feed), handler); err != nil {
+		log.Fatalf("Failed to serve: %v", err)
+	}
+}
 
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-
-	<-quit
-	log.Print("shutting down server")
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
-	defer cancel()
-
-	if err := server.Shutdown(ctx); err != nil {
-		log.Fatalf("Server forced shutting down: %s", err)
+func initClient() feed.FeedServiceClient {
+	conn, err := grpc.NewClient("localhost:50053",
+		grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		panic(err)
 	}
 
-	log.Printf("Server exited gracefully")
+	return feed.NewFeedServiceClient(conn)
 }

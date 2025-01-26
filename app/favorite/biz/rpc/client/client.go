@@ -11,11 +11,6 @@ func InitFeedClient() feed.FeedServiceClient {
 	if err != nil {
 		panic(err)
 	}
-	defer func(conn *grpc.ClientConn) {
-		err := conn.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(conn)
+
 	return feed.NewFeedServiceClient(conn)
 }

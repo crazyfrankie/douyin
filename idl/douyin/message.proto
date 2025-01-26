@@ -4,6 +4,8 @@ package message;
 
 option go_package="/message";
 
+import "idl/google/api/annotations.proto";
+
 message Message {
   int64 id = 1; // message id
   int64 to_user_id = 2; // The id of the recipient of the message
@@ -13,7 +15,7 @@ message Message {
 }
 
 message MessageActionRequest {
-  int64 user_id = 1;
+  string token = 1;
   int64 to_user_id = 2;
   string content = 3;
   int64 action_type = 4;
@@ -22,7 +24,7 @@ message MessageActionRequest {
 message MessageActionResponse {}
 
 message MessageChatRequest {
-  int64 user_id = 1;
+  string token = 1;
   int64 to_user_id = 2;
   int64 pre_msg_time = 3;
 }
@@ -32,6 +34,15 @@ message MessageChatResponse {
 }
 
 service MessageService {
-  rpc MessageAction(MessageActionRequest) returns (MessageActionResponse);
-  rpc MessageChat(MessageChatRequest) returns (MessageChatResponse);
+  rpc MessageAction(MessageActionRequest) returns (MessageActionResponse) {
+    option (google.api.http) = {
+      post: "/api/message/action"
+      body: "*"
+    };
+  }
+  rpc MessageChat(MessageChatRequest) returns (MessageChatResponse) {
+    option (google.api.http) = {
+      get: "/api/message/chat"
+    };
+  }
 }

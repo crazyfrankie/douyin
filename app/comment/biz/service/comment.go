@@ -61,6 +61,9 @@ func (s *CommentService) CommentAction(ctx context.Context, req *comment.Comment
 }
 
 func (s *CommentService) CommentList(ctx context.Context, req *comment.CommentListRequest) ([]*comment.Comment, error) {
+	userId := ctx.Value("user_id").(float64)
+	uid := int64(userId)
+
 	var commens []*comment.Comment
 
 	dbComments, err := s.repo.GetCommentList(ctx, req.GetVideoId())
@@ -70,7 +73,7 @@ func (s *CommentService) CommentList(ctx context.Context, req *comment.CommentLi
 
 	for _, c := range dbComments {
 		var com *comment.Comment
-		err := s.commentInfo(ctx, &c, com)
+		err := s.commentInfo(ctx, &c, com, uid)
 		if err != nil {
 			return commens, err
 		}
@@ -81,12 +84,13 @@ func (s *CommentService) CommentList(ctx context.Context, req *comment.CommentLi
 	return commens, nil
 }
 
-func (s *CommentService) commentInfo(ctx context.Context, dbComment *dao.Comment, comment *comment.Comment) error {
+func (s *CommentService) commentInfo(ctx context.Context, dbComment *dao.Comment, comment *comment.Comment, currUserId int64) error {
 	comment.Id = dbComment.ID
 	comment.Content = dbComment.Content
 	comment.CreateDate = time.Unix(dbComment.Ctime, 0).Format("2006-01-02")
 	resp, err := s.userClient.GetUserInfo(ctx, &user.GetUserInfoRequest{
-		UserId: dbComment.UserID,
+		UserId:        currUserId,
+		UserIdToQuery: dbComment.UserID,
 	})
 	if err != nil {
 		return err

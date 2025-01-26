@@ -4,12 +4,13 @@ package publish;
 
 option go_package="/publish";
 
-import "idl/common.proto";
+import "idl/douyin/common.proto";
+import "idl/google/api/annotations.proto";
 
 message PublishActionRequest {
   bytes data = 1;
   string title = 2;
-  int64 user_id = 3;
+  string token = 3;
 }
 
 message PublishActionResponse {
@@ -17,7 +18,7 @@ message PublishActionResponse {
 }
 
 message PublishListRequest {
- int64 user_id = 1;
+  string token = 3;
 }
 
 message PublishListResponse {
@@ -33,7 +34,16 @@ message PublishCountResponse {
 }
 
 service PublishService {
-  rpc PublishAction(PublishActionRequest) returns (PublishActionResponse);
-  rpc PublishList(PublishListRequest) returns (PublishListResponse);
+  rpc PublishAction(PublishActionRequest) returns (PublishActionResponse) {
+    option (google.api.http) = {
+      post: "/api/publish/action"
+      body: "*"
+    };
+  }
+  rpc PublishList(PublishListRequest) returns (PublishListResponse) {
+    option (google.api.http) = {
+      get: "/api/publish/list"
+    };
+  }
   rpc PublishCount(PublishCountRequest) returns (PublishCountResponse);
 }

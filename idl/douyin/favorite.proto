@@ -4,7 +4,8 @@ package feed;
 
 option go_package = "/favorite";
 
-import "idl/common.proto";
+import "idl/douyin/common.proto";
+import "idl/google/api/annotations.proto";
 
 message FavoriteCountRequest {
   int64 user_id = 1;
@@ -15,7 +16,7 @@ message FavoriteCountResponse {
 }
 
 message FavoriteActionRequest {
-  int64 user_id = 1;
+  string token = 1;
   int64 video_id = 2;
   int32 action_type = 3;
 }
@@ -23,7 +24,7 @@ message FavoriteActionRequest {
 message FavoriteActionResponse{}
 
 message FavoriteListRequest{
-  int64 user_id = 1;
+  string token = 1;
 }
 
 message FavoriteListResponse {
@@ -59,7 +60,16 @@ service FavoriteService {
   rpc FavoriteCount(FavoriteCountRequest) returns (FavoriteCountResponse);
   rpc UserFavorited(UserFavoritedRequest) returns (UserFavoritedResponse);
   rpc VideoFavoriteCount(VideoFavoriteCountRequest) returns (VideoFavoriteCountResponse);
-  rpc FavoriteAction(FavoriteActionRequest) returns (FavoriteActionResponse);
-  rpc FavoriteList(FavoriteListRequest) returns (FavoriteListResponse);
+  rpc FavoriteAction(FavoriteActionRequest) returns (FavoriteActionResponse) {
+    option (google.api.http) = {
+      post: "/api/favorite/action"
+      body: "*"
+    };
+  }
+  rpc FavoriteList(FavoriteListRequest) returns (FavoriteListResponse) {
+    option (google.api.http) = {
+      get: "/api/favorite/list"
+    };
+  }
   rpc IsFavorite(IsFavoriteRequest) returns (IsFavoriteResponse);
 }

@@ -2,12 +2,13 @@ package main
 
 import (
 	"context"
+	"github.com/crazyfrankie/douyin/app/relation/ioc"
 	"log"
 	"time"
 
 	"github.com/joho/godotenv"
 	clientv3 "go.etcd.io/etcd/client/v3"
-	
+
 	"github.com/crazyfrankie/douyin/app/relation/config"
 )
 
@@ -17,7 +18,7 @@ func main() {
 		panic(err)
 	}
 
-	app := InitApp()
+	app := ioc.InitApp()
 
 	err = app.RPCServer.Serve()
 

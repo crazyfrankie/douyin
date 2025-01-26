@@ -16,7 +16,7 @@ func GenerateToken(uid int64) (string, error) {
 		"issue_at":  time.Now().Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(config.GetConf().JWT.SecretKey)
+	tokenString, err := token.SignedString([]byte(config.GetConf().JWT.SecretKey))
 	if err != nil {
 		return "", err
 	}

@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"github.com/crazyfrankie/douyin/app/favorite/mw"
 	"google.golang.org/grpc"
 
 	"github.com/crazyfrankie/douyin/app/favorite/biz/service"
@@ -22,7 +23,13 @@ func (f *FavoriteServer) RegisterServer(server *grpc.Server) {
 }
 
 func (f *FavoriteServer) FavoriteAction(ctx context.Context, request *favorite.FavoriteActionRequest) (*favorite.FavoriteActionResponse, error) {
-	err := f.svc.FavoriteAction(ctx, request)
+	claims, err := mw.ParseToken(request.GetToken())
+	if err != nil {
+		return nil, err
+	}
+
+	newCtx := context.WithValue(ctx, "user_id", claims["user_id"])
+	err = f.svc.FavoriteAction(newCtx, request)
 	if err != nil {
 		return nil, err
 	}
@@ -31,7 +38,14 @@ func (f *FavoriteServer) FavoriteAction(ctx context.Context, request *favorite.F
 }
 
 func (f *FavoriteServer) FavoriteList(ctx context.Context, request *favorite.FavoriteListRequest) (*favorite.FavoriteListResponse, error) {
-	videos, err := f.svc.FavoriteList(ctx, request)
+	claims, err := mw.ParseToken(request.GetToken())
+	if err != nil {
+		return nil, err
+	}
+
+	newCtx := context.WithValue(ctx, "user_id", claims["user_id"])
+
+	videos, err := f.svc.FavoriteList(newCtx, request)
 	if err != nil {
 		return nil, err
 	}
