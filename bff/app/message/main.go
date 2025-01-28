@@ -9,6 +9,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/metadata"
 
 	"github.com/crazyfrankie/douyin/bff/config"
 	"github.com/crazyfrankie/douyin/bff/mw"
@@ -16,7 +17,15 @@ import (
 )
 
 func main() {
-	mux := runtime.NewServeMux()
+	mux := runtime.NewServeMux(runtime.WithMetadata(func(ctx context.Context, request *http.Request) metadata.MD {
+		md := metadata.MD{}
+
+		if userID, ok := request.Context().Value("user_id").(string); ok {
+			md.Set("user_id", userID)
+		}
+
+		return md
+	}))
 
 	client := initClient()
 

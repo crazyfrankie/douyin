@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	CommentService_CommentAction_FullMethodName = "/comment.CommentService/CommentAction"
 	CommentService_CommentList_FullMethodName   = "/comment.CommentService/CommentList"
+	CommentService_CommentCount_FullMethodName  = "/comment.CommentService/CommentCount"
 )
 
 // CommentServiceClient is the client API for CommentService service.
@@ -29,6 +30,7 @@ const (
 type CommentServiceClient interface {
 	CommentAction(ctx context.Context, in *CommentActionRequest, opts ...grpc.CallOption) (*CommentActionResponse, error)
 	CommentList(ctx context.Context, in *CommentListRequest, opts ...grpc.CallOption) (*CommentListResponse, error)
+	CommentCount(ctx context.Context, in *CommentCountRequest, opts ...grpc.CallOption) (*CommentCountResponse, error)
 }
 
 type commentServiceClient struct {
@@ -59,12 +61,23 @@ func (c *commentServiceClient) CommentList(ctx context.Context, in *CommentListR
 	return out, nil
 }
 
+func (c *commentServiceClient) CommentCount(ctx context.Context, in *CommentCountRequest, opts ...grpc.CallOption) (*CommentCountResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CommentCountResponse)
+	err := c.cc.Invoke(ctx, CommentService_CommentCount_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CommentServiceServer is the server API for CommentService service.
 // All implementations must embed UnimplementedCommentServiceServer
 // for forward compatibility.
 type CommentServiceServer interface {
 	CommentAction(context.Context, *CommentActionRequest) (*CommentActionResponse, error)
 	CommentList(context.Context, *CommentListRequest) (*CommentListResponse, error)
+	CommentCount(context.Context, *CommentCountRequest) (*CommentCountResponse, error)
 	mustEmbedUnimplementedCommentServiceServer()
 }
 
@@ -80,6 +93,9 @@ func (UnimplementedCommentServiceServer) CommentAction(context.Context, *Comment
 }
 func (UnimplementedCommentServiceServer) CommentList(context.Context, *CommentListRequest) (*CommentListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CommentList not implemented")
+}
+func (UnimplementedCommentServiceServer) CommentCount(context.Context, *CommentCountRequest) (*CommentCountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CommentCount not implemented")
 }
 func (UnimplementedCommentServiceServer) mustEmbedUnimplementedCommentServiceServer() {}
 func (UnimplementedCommentServiceServer) testEmbeddedByValue()                        {}
@@ -138,6 +154,24 @@ func _CommentService_CommentList_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CommentService_CommentCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CommentCountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CommentServiceServer).CommentCount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CommentService_CommentCount_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CommentServiceServer).CommentCount(ctx, req.(*CommentCountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CommentService_ServiceDesc is the grpc.ServiceDesc for CommentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +186,10 @@ var CommentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CommentList",
 			Handler:    _CommentService_CommentList_Handler,
+		},
+		{
+			MethodName: "CommentCount",
+			Handler:    _CommentService_CommentCount_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

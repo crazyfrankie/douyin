@@ -2,6 +2,9 @@ package service
 
 import (
 	"context"
+	"github.com/crazyfrankie/douyin/app/message/common/errno"
+	"google.golang.org/grpc/metadata"
+	"strconv"
 
 	"github.com/crazyfrankie/douyin/app/message/biz/repository"
 	"github.com/crazyfrankie/douyin/app/message/biz/repository/dao"
@@ -17,8 +20,13 @@ func NewMessageService(repo *repository.MessageRepo) *MessageService {
 }
 
 func (s *MessageService) MessageAction(ctx context.Context, req *message.MessageActionRequest) error {
-	userId := ctx.Value("user_id").(float64)
-	uid := int64(userId)
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return errno.ParamErr
+	}
+	userId := md["user_id"][0]
+	uId, _ := strconv.Atoi(userId)
+	uid := int64(uId)
 
 	msg := dao.Message{
 		FromUserId: uid,
@@ -30,8 +38,13 @@ func (s *MessageService) MessageAction(ctx context.Context, req *message.Message
 }
 
 func (s *MessageService) MessageChat(ctx context.Context, req *message.MessageChatRequest) ([]*message.Message, error) {
-	userId := ctx.Value("user_id").(float64)
-	uid := int64(userId)
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return nil, errno.ParamErr
+	}
+	userId := md["user_id"][0]
+	uId, _ := strconv.Atoi(userId)
+	uid := int64(uId)
 	toUid, preMsgTime := req.GetToUserId(), req.GetPreMsgTime()
 
 	var messages []*message.Message

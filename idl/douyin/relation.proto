@@ -9,15 +9,13 @@ import "idl/google/api/annotations.proto";
 
 
 message RelationActionRequest {
-  string token = 1;
-  int64 to_user_id = 2;
-  int64 action_type = 3;
+  int64 to_user_id = 1;
+  int64 action_type = 2;
 }
 
 message RelationActionResponse {}
 
 message RelationFollowListRequest {
-  string token = 1;
 }
 
 message RelationFollowListResponse {
@@ -25,7 +23,6 @@ message RelationFollowListResponse {
 }
 
 message RelationFollowerListRequest {
-  string token = 1;
 }
 
 message RelationFollowerListResponse {
@@ -33,7 +30,6 @@ message RelationFollowerListResponse {
 }
 
 message RelationFriendListRequest {
-  string token = 1;
 }
 
 message RelationFriendListResponse {

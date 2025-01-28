@@ -23,7 +23,8 @@ func InitApp() *App {
 	feedRepo := repository.NewFeedRepo(feedDao)
 	userServiceClient := client.InitUserClient()
 	favoriteServiceClient := client.InitFavoriteClient()
-	feedService := service.NewFeedService(feedRepo, userServiceClient, favoriteServiceClient)
+	commentServiceClient := client.InitCommentClient()
+	feedService := service.NewFeedService(feedRepo, userServiceClient, favoriteServiceClient, commentServiceClient)
 	videoServer := server.NewVideoServer(feedService)
 	rpcServer := rpc.NewFeedRPCServer(videoServer)
 	app := &App{

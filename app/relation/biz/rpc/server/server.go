@@ -2,8 +2,6 @@ package server
 
 import (
 	"context"
-	"github.com/crazyfrankie/douyin/app/relation/mw"
-
 	"google.golang.org/grpc"
 
 	"github.com/crazyfrankie/douyin/app/relation/biz/service"
@@ -24,14 +22,7 @@ func (r *RelationServer) RegisterServer(server *grpc.Server) {
 }
 
 func (r *RelationServer) RelationAction(ctx context.Context, request *relation.RelationActionRequest) (*relation.RelationActionResponse, error) {
-	claims, err := mw.ParseToken(request.GetToken())
-	if err != nil {
-		return nil, err
-	}
-
-	newCtx := context.WithValue(ctx, "user_id", claims["user_id"])
-
-	err = r.svc.FollowAction(newCtx, request)
+	err := r.svc.FollowAction(ctx, request)
 	if err != nil {
 		return nil, err
 	}
@@ -40,14 +31,7 @@ func (r *RelationServer) RelationAction(ctx context.Context, request *relation.R
 }
 
 func (r *RelationServer) RelationFollowList(ctx context.Context, request *relation.RelationFollowListRequest) (*relation.RelationFollowListResponse, error) {
-	claims, err := mw.ParseToken(request.GetToken())
-	if err != nil {
-		return nil, err
-	}
-
-	newCtx := context.WithValue(ctx, "user_id", claims["user_id"])
-
-	resp, err := r.svc.FollowList(newCtx, request)
+	resp, err := r.svc.FollowList(ctx, request)
 	if err != nil {
 		return nil, err
 	}
@@ -58,14 +42,7 @@ func (r *RelationServer) RelationFollowList(ctx context.Context, request *relati
 }
 
 func (r *RelationServer) RelationFollowerList(ctx context.Context, request *relation.RelationFollowerListRequest) (*relation.RelationFollowerListResponse, error) {
-	claims, err := mw.ParseToken(request.GetToken())
-	if err != nil {
-		return nil, err
-	}
-
-	newCtx := context.WithValue(ctx, "user_id", claims["user_id"])
-
-	resp, err := r.svc.FollowerList(newCtx, request)
+	resp, err := r.svc.FollowerList(ctx, request)
 	if err != nil {
 		return nil, err
 	}
@@ -76,14 +53,7 @@ func (r *RelationServer) RelationFollowerList(ctx context.Context, request *rela
 }
 
 func (r *RelationServer) RelationFriendList(ctx context.Context, request *relation.RelationFriendListRequest) (*relation.RelationFriendListResponse, error) {
-	claims, err := mw.ParseToken(request.GetToken())
-	if err != nil {
-		return nil, err
-	}
-
-	newCtx := context.WithValue(ctx, "user_id", claims["user_id"])
-
-	resp, err := r.svc.FriendList(newCtx, request)
+	resp, err := r.svc.FriendList(ctx, request)
 	if err != nil {
 		return nil, err
 	}

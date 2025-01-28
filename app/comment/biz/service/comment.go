@@ -2,6 +2,9 @@ package service
 
 import (
 	"context"
+	"github.com/crazyfrankie/douyin/app/comment/common/errno"
+	"google.golang.org/grpc/metadata"
+	"strconv"
 	"time"
 
 	"github.com/importcjj/sensitive"
@@ -61,8 +64,13 @@ func (s *CommentService) CommentAction(ctx context.Context, req *comment.Comment
 }
 
 func (s *CommentService) CommentList(ctx context.Context, req *comment.CommentListRequest) ([]*comment.Comment, error) {
-	userId := ctx.Value("user_id").(float64)
-	uid := int64(userId)
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return nil, errno.ParamErr
+	}
+	userId := md["user_id"][0]
+	uId, _ := strconv.Atoi(userId)
+	uid := int64(uId)
 
 	var commens []*comment.Comment
 
@@ -98,4 +106,13 @@ func (s *CommentService) commentInfo(ctx context.Context, dbComment *dao.Comment
 	comment.User = resp.GetUser()
 
 	return nil
+}
+
+func (s *CommentService) CommentCount(ctx context.Context, req *comment.CommentCountRequest) (int64, error) {
+	count, err := s.repo.GetCommentCount(ctx, req.VideoId)
+	if err != nil {
+		return -1, err
+	}
+
+	return count, nil
 }

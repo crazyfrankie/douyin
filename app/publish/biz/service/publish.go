@@ -11,9 +11,12 @@ import (
 	"sync"
 	"time"
 
+	"google.golang.org/grpc/metadata"
+
 	"github.com/crazyfrankie/douyin/app/publish/biz/repository"
 	"github.com/crazyfrankie/douyin/app/publish/biz/repository/dao"
 	"github.com/crazyfrankie/douyin/app/publish/common/constants"
+	"github.com/crazyfrankie/douyin/app/publish/common/errno"
 	"github.com/crazyfrankie/douyin/app/publish/mw"
 	"github.com/crazyfrankie/douyin/rpc_gen/common"
 	"github.com/crazyfrankie/douyin/rpc_gen/favorite"
@@ -33,8 +36,13 @@ func NewPublishService(repo *repository.PublishRepo, favoClient favorite.Favorit
 }
 
 func (s *PublishService) PublishAction(ctx context.Context, req *publish.PublishActionRequest) error {
-	userId := ctx.Value("user_id").(float64)
-	uid := int64(userId)
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return errno.ParamErr
+	}
+	userId := md["user_id"][0]
+	uId, _ := strconv.Atoi(userId)
+	uid := int64(uId)
 
 	var fileHeader multipart.FileHeader
 	err := json.Unmarshal(req.Data, &fileHeader)
@@ -76,8 +84,13 @@ func (s *PublishService) PublishAction(ctx context.Context, req *publish.Publish
 }
 
 func (s *PublishService) PublishList(ctx context.Context, req *publish.PublishListRequest) ([]*common.Video, error) {
-	userId := ctx.Value("user_id").(float64)
-	uid := int64(userId)
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return nil, errno.ParamErr
+	}
+	userId := md["user_id"][0]
+	uId, _ := strconv.Atoi(userId)
+	uid := int64(uId)
 	videoIds, err := s.repo.GetPublishVideos(ctx, uid)
 	if err != nil {
 		return nil, err

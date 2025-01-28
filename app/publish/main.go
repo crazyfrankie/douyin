@@ -21,6 +21,9 @@ func main() {
 	app := ioc.InitApp()
 
 	err = app.RPCServer.Serve()
+	if err != nil {
+		panic(err)
+	}
 
 	serviceRegister(config.GetConf().RPC.Address)
 }
@@ -35,7 +38,7 @@ func serviceRegister(address string) {
 	defer cli.Close()
 
 	// Register service
-	serviceKey := "/services/user/" + address
+	serviceKey := "/services/publish/" + address
 	leaseResp, err := cli.Grant(context.Background(), 5)
 	if err != nil {
 		log.Fatalf("failed to grant lease: %v", err)

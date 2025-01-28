@@ -6,7 +6,6 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/crazyfrankie/douyin/app/publish/biz/service"
-	"github.com/crazyfrankie/douyin/app/publish/mw"
 	"github.com/crazyfrankie/douyin/rpc_gen/publish"
 )
 
@@ -23,13 +22,7 @@ func (p *PublishServer) RegisterServer(server *grpc.Server) {
 	publish.RegisterPublishServiceServer(server, p)
 }
 func (p *PublishServer) PublishAction(ctx context.Context, request *publish.PublishActionRequest) (*publish.PublishActionResponse, error) {
-	claims, err := mw.ParseToken(request.GetToken())
-	if err != nil {
-		return nil, err
-	}
-
-	newCtx := context.WithValue(ctx, "user_id", claims["user_id"])
-	err = p.svc.PublishAction(newCtx, request)
+	err := p.svc.PublishAction(ctx, request)
 	if err != nil {
 		return nil, err
 	}
@@ -38,14 +31,7 @@ func (p *PublishServer) PublishAction(ctx context.Context, request *publish.Publ
 }
 
 func (p *PublishServer) PublishList(ctx context.Context, request *publish.PublishListRequest) (*publish.PublishListResponse, error) {
-	claims, err := mw.ParseToken(request.GetToken())
-	if err != nil {
-		return nil, err
-	}
-
-	newCtx := context.WithValue(ctx, "user_id", claims["user_id"])
-
-	resp, err := p.svc.PublishList(newCtx, request)
+	resp, err := p.svc.PublishList(ctx, request)
 	if err != nil {
 		return nil, err
 	}

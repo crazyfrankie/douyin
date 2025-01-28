@@ -2,7 +2,11 @@ package service
 
 import (
 	"context"
+	"fmt"
+	"strconv"
 
+	"google.golang.org/grpc/metadata"
+	
 	"github.com/crazyfrankie/douyin/app/favorite/biz/repository"
 	"github.com/crazyfrankie/douyin/app/favorite/biz/repository/dao"
 	"github.com/crazyfrankie/douyin/app/favorite/common/constants"
@@ -23,8 +27,14 @@ func NewFavoriteService(repo *repository.FavoriteRepo, feedClient feed.FeedServi
 
 // FavoriteAction adds or deletes a like relationship between the current user and the current video.
 func (s *FavoriteService) FavoriteAction(ctx context.Context, req *favorite.FavoriteActionRequest) error {
-	userId := ctx.Value("user_id").(float64)
-	uid := int64(userId)
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return errno.ParamErr
+	}
+	fmt.Println("md:", md)
+	userId := md["user_id"][0]
+	uId, _ := strconv.Atoi(userId)
+	uid := int64(uId)
 	vid := req.GetVideoId()
 
 	// 查询视频是否存在
@@ -65,8 +75,13 @@ func (s *FavoriteService) FavoriteAction(ctx context.Context, req *favorite.Favo
 
 // FavoriteList returns the list of videos liked by the current user.
 func (s *FavoriteService) FavoriteList(ctx context.Context, req *favorite.FavoriteListRequest) ([]*common.Video, error) {
-	userId := ctx.Value("user_id").(float64)
-	uid := int64(userId)
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return nil, errno.ParamErr
+	}
+	userId := md["user_id"][0]
+	uId, _ := strconv.Atoi(userId)
+	uid := int64(uId)
 
 	favorsID, err := s.repo.GetFavoriteVideosByID(ctx, uid)
 	if err != nil {

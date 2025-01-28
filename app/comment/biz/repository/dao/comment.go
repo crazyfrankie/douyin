@@ -44,3 +44,10 @@ func (d *CommentDao) GetCommentList(ctx context.Context, vid int64) ([]Comment, 
 
 	return comments, err
 }
+
+func (d *CommentDao) GetCommentCount(ctx context.Context, vid int64) (int64, error) {
+	var count int64
+	err := d.db.WithContext(ctx).Where("video_id = ?", vid).Count(&count).Error
+
+	return count, err
+}

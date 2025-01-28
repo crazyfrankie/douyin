@@ -28,11 +28,18 @@ message Comment {
 
 message CommentListRequest {
   int64 video_id = 1;
-  string token = 2;
 }
 
 message CommentListResponse {
   repeated Comment comment_list = 1;
+}
+
+message CommentCountRequest {
+  int64 video_id = 1;
+}
+
+message CommentCountResponse {
+  int64 count = 1;
 }
 
 service CommentService {
@@ -47,4 +54,5 @@ service CommentService {
       get: "/api/comment/list"
     };
   }
+  rpc CommentCount(CommentCountRequest) returns (CommentCountResponse);
 }

@@ -21,6 +21,9 @@ func main() {
 	app := ioc.InitApp()
 
 	err = app.RPCServer.Serve()
+	if err != nil {
+		panic(err)
+	}
 
 	serviceRegister(config.GetConf().RPC.Address)
 }

@@ -21,6 +21,7 @@ func InitApp() *App {
 
 		client.InitUserClient,
 		client.InitFavoriteClient,
+		client.InitCommentClient,
 		server.NewVideoServer,
 
 		rpc.NewFeedRPCServer,

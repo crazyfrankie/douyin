@@ -10,7 +10,6 @@ import "idl/google/api/annotations.proto";
 message PublishActionRequest {
   bytes data = 1;
   string title = 2;
-  string token = 3;
 }
 
 message PublishActionResponse {
@@ -18,7 +17,6 @@ message PublishActionResponse {
 }
 
 message PublishListRequest {
-  string token = 3;
 }
 
 message PublishListResponse {

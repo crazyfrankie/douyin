@@ -24,3 +24,7 @@ func (r *CommentRepo) DeleteComment(ctx context.Context, id int64) error {
 func (r *CommentRepo) GetCommentList(ctx context.Context, vid int64) ([]dao.Comment, error) {
 	return r.dao.GetCommentList(ctx, vid)
 }
+
+func (r *CommentRepo) GetCommentCount(ctx context.Context, vid int64) (int64, error) {
+	return r.dao.GetCommentCount(ctx, vid)
+}

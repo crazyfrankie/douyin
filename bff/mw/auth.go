@@ -1,8 +1,10 @@
 package mw
 
 import (
+	"context"
 	"errors"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/golang-jwt/jwt"
@@ -35,12 +37,16 @@ func (a *AuthBuild) Auth(next http.Handler) http.HandlerFunc {
 		tokenHeader := r.Header.Get("Authorization")
 		token := extractToken(tokenHeader)
 
-		_, err := parseToken(token)
+		claims, err := parseToken(token)
 		if err != nil {
 			w.WriteHeader(http.StatusUnauthorized)
 			_, _ = w.Write([]byte("Unauthorized"))
 			return
 		}
+
+		userId := claims["user_id"].(float64)
+		uid := strconv.FormatFloat(userId, 'f', 0, 64)
+		r = r.WithContext(context.WithValue(r.Context(), "user_id", uid))
 
 		next.ServeHTTP(w, r)
 	}

@@ -16,15 +16,13 @@ message FavoriteCountResponse {
 }
 
 message FavoriteActionRequest {
-  string token = 1;
-  int64 video_id = 2;
-  int32 action_type = 3;
+  int64 video_id = 1;
+  int32 action_type = 2;
 }
 
 message FavoriteActionResponse{}
 
 message FavoriteListRequest{
-  string token = 1;
 }
 
 message FavoriteListResponse {

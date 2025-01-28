@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/crazyfrankie/douyin/rpc_gen/comment"
 	"log"
 	"sync"
 	"time"
@@ -15,13 +16,14 @@ import (
 )
 
 type FeedService struct {
-	repo        *repository.FeedRepo
-	userClient  user.UserServiceClient
-	favorClient favorite.FavoriteServiceClient
+	repo          *repository.FeedRepo
+	userClient    user.UserServiceClient
+	favorClient   favorite.FavoriteServiceClient
+	commentClient comment.CommentServiceClient
 }
 
-func NewFeedService(repo *repository.FeedRepo, userClient user.UserServiceClient, favorClient favorite.FavoriteServiceClient) *FeedService {
-	return &FeedService{repo: repo, userClient: userClient, favorClient: favorClient}
+func NewFeedService(repo *repository.FeedRepo, userClient user.UserServiceClient, favorClient favorite.FavoriteServiceClient, commentClient comment.CommentServiceClient) *FeedService {
+	return &FeedService{repo: repo, userClient: userClient, favorClient: favorClient, commentClient: commentClient}
 }
 
 // Feed returns a list of recommended videos for logged-in user
@@ -141,7 +143,13 @@ func (s *FeedService) VideoInfo(ctx context.Context, req *feed.VideoInfoRequest)
 
 	// Get comment count
 	go func() {
-
+		resp, err := s.commentClient.CommentCount(ctx, &comment.CommentCountRequest{
+			VideoId: vid,
+		})
+		if err != nil {
+			log.Printf("CommentCount func error:" + err.Error())
+		}
+		video.CommentCount = resp.Count
 	}()
 
 	wg.Wait()

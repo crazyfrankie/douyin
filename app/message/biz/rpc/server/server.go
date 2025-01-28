@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"github.com/crazyfrankie/douyin/app/message/mw"
 
 	"google.golang.org/grpc"
 
@@ -24,14 +23,7 @@ func (m *MessageServer) RegisterServer(server *grpc.Server) {
 }
 
 func (m *MessageServer) MessageAction(ctx context.Context, request *message.MessageActionRequest) (*message.MessageActionResponse, error) {
-	claims, err := mw.ParseToken(request.GetToken())
-	if err != nil {
-		return nil, err
-	}
-
-	newCtx := context.WithValue(ctx, "user_id", claims["user_id"])
-
-	err = m.svc.MessageAction(newCtx, request)
+	err := m.svc.MessageAction(ctx, request)
 	if err != nil {
 		return nil, err
 	}
@@ -40,14 +32,7 @@ func (m *MessageServer) MessageAction(ctx context.Context, request *message.Mess
 }
 
 func (m *MessageServer) MessageChat(ctx context.Context, request *message.MessageChatRequest) (*message.MessageChatResponse, error) {
-	claims, err := mw.ParseToken(request.GetToken())
-	if err != nil {
-		return nil, err
-	}
-
-	newCtx := context.WithValue(ctx, "user_id", claims["user_id"])
-
-	resp, err := m.svc.MessageChat(newCtx, request)
+	resp, err := m.svc.MessageChat(ctx, request)
 	if err != nil {
 		return nil, err
 	}

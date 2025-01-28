@@ -2,7 +2,10 @@ package service
 
 import (
 	"context"
+	"strconv"
 
+	"google.golang.org/grpc/metadata"
+	
 	"github.com/crazyfrankie/douyin/app/relation/biz/repository"
 	"github.com/crazyfrankie/douyin/app/relation/biz/repository/dao"
 	"github.com/crazyfrankie/douyin/app/relation/common/errno"
@@ -21,19 +24,25 @@ func NewRelationService(repo *repository.RelationRepo, userClient user.UserServi
 }
 
 func (s *RelationService) FollowAction(ctx context.Context, req *relation.RelationActionRequest) error {
-	uid := ctx.Value("user_id").(float64)
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return errno.ParamErr
+	}
+	userId := md["user_id"][0]
+	uId, _ := strconv.Atoi(userId)
+	uid := int64(uId)
 	_, err := s.userClient.GetUserExists(ctx, &user.GetUserExistsRequest{
-		UserId: int64(uid),
+		UserId: uid,
 	})
 	if err != nil {
 		return err
 	}
 
 	follow := dao.Relation{
-		UserId:   int64(uid),
+		UserId:   uid,
 		ToUserId: req.GetToUserId(),
 	}
-	exists, _ := s.repo.GetFollowExists(ctx, int64(uid), req.GetToUserId())
+	exists, _ := s.repo.GetFollowExists(ctx, uid, req.GetToUserId())
 	if req.GetActionType() == 1 {
 		if exists {
 			return errno.FollowRelationAlreadyExistErr
@@ -50,8 +59,13 @@ func (s *RelationService) FollowAction(ctx context.Context, req *relation.Relati
 }
 
 func (s *RelationService) FollowList(ctx context.Context, req *relation.RelationFollowListRequest) ([]*common.User, error) {
-	userId := ctx.Value("user_id").(float64)
-	uid := int64(userId)
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return nil, errno.ParamErr
+	}
+	userId := md["user_id"][0]
+	uId, _ := strconv.Atoi(userId)
+	uid := int64(uId)
 	_, err := s.userClient.GetUserExists(ctx, &user.GetUserExistsRequest{
 		UserId: uid,
 	})
@@ -80,8 +94,13 @@ func (s *RelationService) FollowList(ctx context.Context, req *relation.Relation
 }
 
 func (s *RelationService) FollowerList(ctx context.Context, req *relation.RelationFollowerListRequest) ([]*common.User, error) {
-	userId := ctx.Value("user_id").(float64)
-	uid := int64(userId)
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return nil, errno.ParamErr
+	}
+	userId := md["user_id"][0]
+	uId, _ := strconv.Atoi(userId)
+	uid := int64(uId)
 	_, err := s.userClient.GetUserExists(ctx, &user.GetUserExistsRequest{
 		UserId: uid,
 	})
@@ -110,8 +129,13 @@ func (s *RelationService) FollowerList(ctx context.Context, req *relation.Relati
 }
 
 func (s *RelationService) FriendList(ctx context.Context, req *relation.RelationFriendListRequest) ([]*relation.FriendUser, error) {
-	userId := ctx.Value("user_id").(float64)
-	uid := int64(userId)
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return nil, errno.ParamErr
+	}
+	userId := md["user_id"][0]
+	uId, _ := strconv.Atoi(userId)
+	uid := int64(uId)
 	_, err := s.userClient.GetUserExists(ctx, &user.GetUserExistsRequest{
 		UserId: uid,
 	})
