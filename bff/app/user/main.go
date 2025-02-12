@@ -3,9 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
+	clientv3 "go.etcd.io/etcd/client/v3"
 	"log"
 	"net/http"
+	"time"
 
+	"go.etcd.io/etcd/client/v3/naming/resolver"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
@@ -17,9 +20,15 @@ import (
 
 func main() {
 	mux := runtime.NewServeMux()
-	client := initClient()
 
-	err := user.RegisterUserServiceHandlerClient(context.Background(), mux, client)
+	cli, err := clientv3.New(clientv3.Config{
+		Endpoints:   []string{config.GetConf().ETCD.Addr},
+		DialTimeout: time.Second * 5,
+	})
+
+	client := initClient(cli)
+
+	err = user.RegisterUserServiceHandlerClient(context.Background(), mux, client)
 	if err != nil {
 		panic(err)
 	}
@@ -34,8 +43,9 @@ func main() {
 	}
 }
 
-func initClient() user.UserServiceClient {
-	conn, err := grpc.NewClient("localhost:50051",
+func initClient(cli *clientv3.Client) user.UserServiceClient {
+	builder, err := resolver.NewBuilder(cli)
+	conn, err := grpc.Dial("etcd:///service/user", grpc.WithResolvers(builder),
 		grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		panic(err)

@@ -14,6 +14,7 @@ type Relation struct {
 	Ctime    int64
 	Utime    int64 `gorm:"index"`
 }
+
 type RelationDao struct {
 	db *gorm.DB
 }

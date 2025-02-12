@@ -25,3 +25,7 @@ func (repo *UserRepo) FindByName(ctx context.Context, name string) (dao.User, er
 func (repo *UserRepo) FindByID(ctx context.Context, uid int64) (dao.User, error) {
 	return repo.dao.FindUserByID(ctx, uid)
 }
+
+func (repo *UserRepo) FindByPhone(ctx context.Context, phone string) (dao.User, error) {
+	return repo.dao.FindUserByPhone(ctx, phone)
+}

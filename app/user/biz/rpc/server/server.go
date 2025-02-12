@@ -64,3 +64,21 @@ func (u *UserServer) GetUserExists(ctx context.Context, req *user.GetUserExistsR
 		Exists: res,
 	}, nil
 }
+
+func (u *UserServer) SendCode(ctx context.Context, req *user.SendCodeRequest) (*user.SendCodeResponse, error) {
+	biz, err := u.svc.SendCode(ctx, req.GetPhone())
+	if err != nil {
+		return nil, err
+	}
+
+	return &user.SendCodeResponse{Biz: biz}, nil
+}
+
+func (u *UserServer) VerifyCode(ctx context.Context, req *user.VerifyCodeRequest) (*user.VerifyCodeResponse, error) {
+	token, err := u.svc.VerifyCode(ctx, req.GetBiz(), req.GetPhone(), req.GetCode())
+	if err != nil {
+		return nil, err
+	}
+
+	return &user.VerifyCodeResponse{Token: token}, nil
+}

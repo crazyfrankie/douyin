@@ -4,6 +4,7 @@ package ioc
 
 import (
 	"github.com/crazyfrankie/douyin/app/relation/biz/repository"
+	"github.com/crazyfrankie/douyin/app/relation/biz/repository/cache"
 	"github.com/crazyfrankie/douyin/app/relation/biz/repository/dao"
 	"github.com/crazyfrankie/douyin/app/relation/biz/rpc"
 	"github.com/crazyfrankie/douyin/app/relation/biz/rpc/client"
@@ -15,7 +16,9 @@ import (
 func InitApp() *App {
 	wire.Build(
 		InitDB,
+		InitRedis,
 		dao.NewRelationDao,
+		cache.NewRelationCache,
 		repository.NewRelationRepo,
 		service.NewRelationService,
 

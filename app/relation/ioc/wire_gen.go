@@ -8,6 +8,7 @@ package ioc
 
 import (
 	"github.com/crazyfrankie/douyin/app/relation/biz/repository"
+	"github.com/crazyfrankie/douyin/app/relation/biz/repository/cache"
 	"github.com/crazyfrankie/douyin/app/relation/biz/repository/dao"
 	"github.com/crazyfrankie/douyin/app/relation/biz/rpc"
 	"github.com/crazyfrankie/douyin/app/relation/biz/rpc/client"
@@ -20,7 +21,9 @@ import (
 func InitApp() *App {
 	db := InitDB()
 	relationDao := dao.NewRelationDao(db)
-	relationRepo := repository.NewRelationRepo(relationDao)
+	cmdable := InitRedis()
+	relationCache := cache.NewRelationCache(cmdable)
+	relationRepo := repository.NewRelationRepo(relationDao, relationCache)
 	userServiceClient := client.InitUserClient()
 	relationService := service.NewRelationService(relationRepo, userServiceClient)
 	relationServer := server.NewRelationServer(relationService)

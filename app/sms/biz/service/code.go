@@ -30,6 +30,11 @@ func NewSmsService(repo *repository.CodeRepo, sms ...SendService) *SmsService {
 }
 
 func (s *SmsService) SendSms(ctx context.Context, biz string, args []string, numbers ...string) error {
+	err := s.repo.Store(ctx, biz, numbers[0], args[0])
+	if err != nil {
+		return err
+	}
+
 	// 原子操作，并发安全
 	idx := atomic.AddUint64(&s.idx, 0)
 	length := uint64(len(s.sms))
@@ -49,5 +54,5 @@ func (s *SmsService) SendSms(ctx context.Context, biz string, args []string, num
 }
 
 func (s *SmsService) VerifySms(ctx context.Context, biz, code, number string) error {
-	panic("implement me")
+	return s.repo.Verify(ctx, biz, number, code)
 }

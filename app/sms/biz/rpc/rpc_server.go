@@ -1,11 +1,12 @@
 package rpc
 
 import (
-	"github.com/crazyfrankie/douyin/app/sms/config"
-	"google.golang.org/grpc"
 	"net"
 
+	"google.golang.org/grpc"
+
 	"github.com/crazyfrankie/douyin/app/sms/biz/rpc/server"
+	"github.com/crazyfrankie/douyin/app/sms/config"
 )
 
 type Server struct {

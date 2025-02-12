@@ -29,6 +29,20 @@ service UserService {
     };
   }
 
+  rpc SendCode (SendCodeRequest) returns (SendCodeResponse) {
+    option (google.api.http) = {
+      post: "/api/user/send-code"
+      body: "*"
+    };
+  }
+
+  rpc VerifyCode (VerifyCodeRequest) returns (VerifyCodeResponse) {
+    option (google.api.http) = {
+      post: "/api/user/verify-code"
+      body: "*"
+    };
+  }
+
   rpc GetUserExists (GetUserExistsRequest) returns (GetUserExistsResponse);
 }
 
@@ -68,5 +82,20 @@ message GetUserExistsResponse {
   bool exists = 1;
 }
 
+message SendCodeRequest {
+  string phone = 1;
+}
 
+message SendCodeResponse {
+  string biz = 1;
+}
 
+message VerifyCodeRequest {
+  string phone = 1;
+  string code = 2;
+  string biz = 3;
+}
+
+message VerifyCodeResponse {
+  string token = 1;
+}

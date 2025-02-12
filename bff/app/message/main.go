@@ -3,8 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
+	clientv3 "go.etcd.io/etcd/client/v3"
+	"go.etcd.io/etcd/client/v3/naming/resolver"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
@@ -27,9 +30,14 @@ func main() {
 		return md
 	}))
 
-	client := initClient()
+	cli, err := clientv3.New(clientv3.Config{
+		Endpoints:   []string{config.GetConf().ETCD.Addr},
+		DialTimeout: time.Second * 5,
+	})
 
-	err := message.RegisterMessageServiceHandlerClient(context.Background(), mux, client)
+	client := initClient(cli)
+
+	err = message.RegisterMessageServiceHandlerClient(context.Background(), mux, client)
 	if err != nil {
 		panic(err)
 	}
@@ -42,8 +50,9 @@ func main() {
 	}
 }
 
-func initClient() message.MessageServiceClient {
-	conn, err := grpc.NewClient("localhost:50057",
+func initClient(cli *clientv3.Client) message.MessageServiceClient {
+	builder, err := resolver.NewBuilder(cli)
+	conn, err := grpc.Dial("etcd:///service/message", grpc.WithResolvers(builder),
 		grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		panic(err)

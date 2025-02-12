@@ -18,5 +18,5 @@ jwt:
 
 minio:
   endpoint: "localhost:9000"
-  minio_access_key: "Phmvb9D6JUCMdlfyPOiI"
-  minio_secret_key: "01nJjJQ9J3BH8VpIsfD472vXHldpeg97BIz8FCvM"
+  access_key: "Phmvb9D6JUCMdlfyPOiI"
+  secret_key: "01nJjJQ9J3BH8VpIsfD472vXHldpeg97BIz8FCvM"

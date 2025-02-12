@@ -10,7 +10,8 @@ import (
 
 type User struct {
 	ID              int64  `gorm:"primaryKey,autoIncrement"`
-	Name            string `gorm:"unique;not null;type:varchar(64)"`
+	Phone           string `gorm:"unique"`
+	Name            string `gorm:"not null;type:varchar(64)"`
 	Password        string `gorm:"not null;type:varchar(128)"`
 	Avatar          string `gorm:"type:varchar(128)"`
 	BackgroundImage string `gorm:"type:varchar(128)"`
@@ -55,6 +56,16 @@ func (dao *UserDao) FindUserByName(ctx context.Context, name string) (User, erro
 func (dao *UserDao) FindUserByID(ctx context.Context, uid int64) (User, error) {
 	var user User
 	err := dao.db.WithContext(ctx).Model(&User{}).Where("id = ?", uid).First(&user).Error
+	if err != nil {
+		return User{}, err
+	}
+
+	return user, nil
+}
+
+func (dao *UserDao) FindUserByPhone(ctx context.Context, phone string) (User, error) {
+	var user User
+	err := dao.db.WithContext(ctx).Model(&User{}).Where("phone = ?", phone).First(&user).Error
 	if err != nil {
 		return User{}, err
 	}

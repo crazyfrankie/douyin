@@ -32,6 +32,10 @@ func (s *SmsServer) SendSms(ctx context.Context, request *sms.SendSmsRequest) (*
 }
 
 func (s *SmsServer) VerifySms(ctx context.Context, request *sms.VerifySmsRequest) (*sms.VerifySmsResponse, error) {
-	//TODO implement me
-	panic("implement me")
+	err := s.svc.VerifySms(ctx, request.GetBiz(), request.GetNumber(), request.GetCode())
+	if err != nil {
+		return nil, err
+	}
+
+	return &sms.VerifySmsResponse{}, nil
 }

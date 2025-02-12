@@ -18,6 +18,7 @@ var (
 type Config struct {
 	Env    string
 	Server Server `yaml:"server"`
+	ETCD   ETCD   `yaml:"etcd"`
 }
 
 type Server struct {
@@ -28,6 +29,10 @@ type Server struct {
 	Comment  string `yaml:"comment"`
 	Relation string `yaml:"relation"`
 	Message  string `yaml:"message"`
+}
+
+type ETCD struct {
+	Addr string `yaml:"addr"`
 }
 
 func GetConf() *Config {

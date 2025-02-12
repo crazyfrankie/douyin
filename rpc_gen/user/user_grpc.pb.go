@@ -22,6 +22,8 @@ const (
 	UserService_GetUserInfo_FullMethodName   = "/user.UserService/GetUserInfo"
 	UserService_Register_FullMethodName      = "/user.UserService/Register"
 	UserService_Login_FullMethodName         = "/user.UserService/Login"
+	UserService_SendCode_FullMethodName      = "/user.UserService/SendCode"
+	UserService_VerifyCode_FullMethodName    = "/user.UserService/VerifyCode"
 	UserService_GetUserExists_FullMethodName = "/user.UserService/GetUserExists"
 )
 
@@ -34,6 +36,8 @@ type UserServiceClient interface {
 	GetUserInfo(ctx context.Context, in *GetUserInfoRequest, opts ...grpc.CallOption) (*GetUserInfoResponse, error)
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
+	SendCode(ctx context.Context, in *SendCodeRequest, opts ...grpc.CallOption) (*SendCodeResponse, error)
+	VerifyCode(ctx context.Context, in *VerifyCodeRequest, opts ...grpc.CallOption) (*VerifyCodeResponse, error)
 	GetUserExists(ctx context.Context, in *GetUserExistsRequest, opts ...grpc.CallOption) (*GetUserExistsResponse, error)
 }
 
@@ -75,6 +79,26 @@ func (c *userServiceClient) Login(ctx context.Context, in *LoginRequest, opts ..
 	return out, nil
 }
 
+func (c *userServiceClient) SendCode(ctx context.Context, in *SendCodeRequest, opts ...grpc.CallOption) (*SendCodeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SendCodeResponse)
+	err := c.cc.Invoke(ctx, UserService_SendCode_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) VerifyCode(ctx context.Context, in *VerifyCodeRequest, opts ...grpc.CallOption) (*VerifyCodeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(VerifyCodeResponse)
+	err := c.cc.Invoke(ctx, UserService_VerifyCode_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userServiceClient) GetUserExists(ctx context.Context, in *GetUserExistsRequest, opts ...grpc.CallOption) (*GetUserExistsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetUserExistsResponse)
@@ -94,6 +118,8 @@ type UserServiceServer interface {
 	GetUserInfo(context.Context, *GetUserInfoRequest) (*GetUserInfoResponse, error)
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
+	SendCode(context.Context, *SendCodeRequest) (*SendCodeResponse, error)
+	VerifyCode(context.Context, *VerifyCodeRequest) (*VerifyCodeResponse, error)
 	GetUserExists(context.Context, *GetUserExistsRequest) (*GetUserExistsResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
@@ -113,6 +139,12 @@ func (UnimplementedUserServiceServer) Register(context.Context, *RegisterRequest
 }
 func (UnimplementedUserServiceServer) Login(context.Context, *LoginRequest) (*LoginResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+}
+func (UnimplementedUserServiceServer) SendCode(context.Context, *SendCodeRequest) (*SendCodeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendCode not implemented")
+}
+func (UnimplementedUserServiceServer) VerifyCode(context.Context, *VerifyCodeRequest) (*VerifyCodeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyCode not implemented")
 }
 func (UnimplementedUserServiceServer) GetUserExists(context.Context, *GetUserExistsRequest) (*GetUserExistsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserExists not implemented")
@@ -192,6 +224,42 @@ func _UserService_Login_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_SendCode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendCodeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).SendCode(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_SendCode_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).SendCode(ctx, req.(*SendCodeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_VerifyCode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyCodeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).VerifyCode(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_VerifyCode_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).VerifyCode(ctx, req.(*VerifyCodeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _UserService_GetUserExists_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetUserExistsRequest)
 	if err := dec(in); err != nil {
@@ -228,6 +296,14 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Login",
 			Handler:    _UserService_Login_Handler,
+		},
+		{
+			MethodName: "SendCode",
+			Handler:    _UserService_SendCode_Handler,
+		},
+		{
+			MethodName: "VerifyCode",
+			Handler:    _UserService_VerifyCode_Handler,
 		},
 		{
 			MethodName: "GetUserExists",

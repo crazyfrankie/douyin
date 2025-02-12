@@ -6,3 +6,6 @@ server:
   comment: "localhost:9094"
   relation: "localhost:9095"
   message: "localhost:9096"
+
+etcd:
+  addr: "localhost:2379"

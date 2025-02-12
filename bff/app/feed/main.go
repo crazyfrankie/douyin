@@ -3,8 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
+	clientv3 "go.etcd.io/etcd/client/v3"
+	"go.etcd.io/etcd/client/v3/naming/resolver"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
@@ -18,9 +21,13 @@ import (
 func main() {
 	mux := runtime.NewServeMux()
 
-	client := initClient()
+	cli, err := clientv3.New(clientv3.Config{
+		Endpoints:   []string{config.GetConf().ETCD.Addr},
+		DialTimeout: time.Second * 5,
+	})
+	client := initClient(cli)
 
-	err := feed.RegisterFeedServiceHandlerClient(context.Background(), mux, client)
+	err = feed.RegisterFeedServiceHandlerClient(context.Background(), mux, client)
 	if err != nil {
 		panic(err)
 	}
@@ -33,12 +40,12 @@ func main() {
 	}
 }
 
-func initClient() feed.FeedServiceClient {
-	conn, err := grpc.NewClient("localhost:50053",
+func initClient(cli *clientv3.Client) feed.FeedServiceClient {
+	builder, err := resolver.NewBuilder(cli)
+	conn, err := grpc.Dial("etcd:///service/feed", grpc.WithResolvers(builder),
 		grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		panic(err)
 	}
-
 	return feed.NewFeedServiceClient(conn)
 }

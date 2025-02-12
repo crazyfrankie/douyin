@@ -2,17 +2,27 @@ package service
 
 import (
 	"context"
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/hex"
+	"math/rand"
+	"strconv"
+	"strings"
 	"sync"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/crazyfrankie/douyin/app/user/biz/repository"
 	"github.com/crazyfrankie/douyin/app/user/biz/repository/dao"
+	"github.com/crazyfrankie/douyin/app/user/common/constants"
 	"github.com/crazyfrankie/douyin/app/user/common/errno"
+	"github.com/crazyfrankie/douyin/app/user/config"
 	"github.com/crazyfrankie/douyin/rpc_gen/common"
 	"github.com/crazyfrankie/douyin/rpc_gen/favorite"
 	"github.com/crazyfrankie/douyin/rpc_gen/publish"
 	"github.com/crazyfrankie/douyin/rpc_gen/relation"
+	"github.com/crazyfrankie/douyin/rpc_gen/sms"
 	"github.com/crazyfrankie/douyin/rpc_gen/user"
 )
 
@@ -25,10 +35,11 @@ type UserService struct {
 	favorClient    favorite.FavoriteServiceClient
 	publishClient  publish.PublishServiceClient
 	relationClient relation.RelationServiceClient
+	smsClient      sms.SmsServiceClient
 }
 
-func NewUserService(repo *repository.UserRepo, favorClient favorite.FavoriteServiceClient, publishClient publish.PublishServiceClient, relationClient relation.RelationServiceClient) *UserService {
-	return &UserService{repo: repo, favorClient: favorClient, publishClient: publishClient, relationClient: relationClient}
+func NewUserService(repo *repository.UserRepo, favorClient favorite.FavoriteServiceClient, publishClient publish.PublishServiceClient, relationClient relation.RelationServiceClient, smsClient sms.SmsServiceClient) *UserService {
+	return &UserService{repo: repo, favorClient: favorClient, publishClient: publishClient, relationClient: relationClient, smsClient: smsClient}
 }
 
 func (s *UserService) Register(ctx context.Context, req *user.RegisterRequest) (string, error) {
@@ -73,6 +84,67 @@ func (s *UserService) Login(ctx context.Context, req *user.LoginRequest) (string
 
 	var token string
 	token, err = GenerateToken(u.ID)
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
+}
+
+func (s *UserService) SendCode(ctx context.Context, phone string) (string, error) {
+	u, err := s.repo.FindByPhone(ctx, phone)
+	if err != nil {
+		return "", err
+	}
+	var biz string
+	if u.ID == 0 {
+		biz = constants.Register
+	} else {
+		biz = constants.Login
+	}
+
+	code := generateCode()
+	hashCode := generateHMAC(code, config.GetConf().JWT.SecretKey)
+
+	_, err = s.smsClient.SendSms(ctx, &sms.SendSmsRequest{
+		Biz:     biz,
+		Args:    []string{hashCode},
+		Numbers: []string{phone},
+	})
+	if err != nil {
+		return "", err
+	}
+
+	return biz, nil
+}
+
+func (s *UserService) VerifyCode(ctx context.Context, biz, phone, code string) (string, error) {
+	hashCode := generateHMAC(code, config.GetConf().JWT.SecretKey)
+	_, err := s.smsClient.VerifySms(ctx, &sms.VerifySmsRequest{
+		Biz:    biz,
+		Number: phone,
+		Code:   hashCode,
+	})
+	if err != nil {
+		return "", err
+	}
+
+	var uid int64
+	if biz == constants.Register {
+		u := dao.User{
+			Phone:    phone,
+			Name:     phone,
+			Avatar:   defaultAvatar,
+			Password: phone,
+		}
+		uid, err = s.repo.CreateUser(ctx, u)
+		if err != nil {
+			return "", err
+		}
+	}
+
+	var token string
+	token, err = GenerateToken(uid)
 	if err != nil {
 		return "", err
 	}
@@ -201,4 +273,26 @@ func (s *UserService) GetUserExists(ctx context.Context, req *user.GetUserExists
 	}
 
 	return u.ID != 0, nil
+}
+
+func generateCode() string {
+	rand.New(rand.NewSource(time.Now().UnixNano()))
+
+	var code strings.Builder
+	for i := 0; i < 6; i++ {
+		digit := rand.Intn(10)
+		code.WriteString(strconv.Itoa(digit))
+	}
+	return code.String()
+}
+
+func generateHMAC(code, key string) string {
+	// 创建一个新的 HMAC 哈希对象，使用 SHA-256 哈希算法，并以 key 作为密钥。
+	h := hmac.New(sha256.New, []byte(key))
+
+	// 将输入的 code 数据写入到 HMAC 哈希对象中，进行哈希计算。
+	h.Write([]byte(code))
+
+	// 计算哈希值并返回其十六进制表示形式。
+	return hex.EncodeToString(h.Sum(nil))
 }
